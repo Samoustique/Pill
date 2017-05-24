@@ -1,0 +1,180 @@
+fileFormatVersion: 2
+guid: 995f06b8640c1534e9abf751df2cc15c
+timeCreated: 1495632070
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: air_001
+    100004: air_002
+    100006: ampulle_001
+    100008: ampulle_002
+    100010: bigcup_001
+    100012: bottle_001
+    100014: fluid_001
+    100016: hcup_001
+    100018: hcup_002
+    100020: injection_void_001
+    100022: injection_void_002
+    100024: liquid_loaded_001
+    100026: liquid_unloaded_001
+    100028: needle_001
+    100030: needle_002
+    100032: piston_001
+    100034: piston_002
+    100036: potion_001
+    100038: potion_002
+    100040: seal_locked_001
+    400000: //RootNode
+    400002: air_001
+    400004: air_002
+    400006: ampulle_001
+    400008: ampulle_002
+    400010: bigcup_001
+    400012: bottle_001
+    400014: fluid_001
+    400016: hcup_001
+    400018: hcup_002
+    400020: injection_void_001
+    400022: injection_void_002
+    400024: liquid_loaded_001
+    400026: liquid_unloaded_001
+    400028: needle_001
+    400030: needle_002
+    400032: piston_001
+    400034: piston_002
+    400036: potion_001
+    400038: potion_002
+    400040: seal_locked_001
+    2300000: air_001
+    2300002: air_002
+    2300004: ampulle_001
+    2300006: ampulle_002
+    2300008: bigcup_001
+    2300010: bottle_001
+    2300012: fluid_001
+    2300014: hcup_001
+    2300016: hcup_002
+    2300018: injection_void_001
+    2300020: injection_void_002
+    2300022: liquid_loaded_001
+    2300024: liquid_unloaded_001
+    2300026: needle_001
+    2300028: needle_002
+    2300030: piston_001
+    2300032: piston_002
+    2300034: potion_001
+    2300036: potion_002
+    2300038: seal_locked_001
+    3300000: air_001
+    3300002: air_002
+    3300004: ampulle_001
+    3300006: ampulle_002
+    3300008: bigcup_001
+    3300010: bottle_001
+    3300012: fluid_001
+    3300014: hcup_001
+    3300016: hcup_002
+    3300018: injection_void_001
+    3300020: injection_void_002
+    3300022: liquid_loaded_001
+    3300024: liquid_unloaded_001
+    3300026: needle_001
+    3300028: needle_002
+    3300030: piston_001
+    3300032: piston_002
+    3300034: potion_001
+    3300036: potion_002
+    3300038: seal_locked_001
+    4300000: ampulle_002
+    4300002: air_002
+    4300004: air_001
+    4300006: ampulle_001
+    4300008: fluid_001
+    4300010: needle_002
+    4300012: injection_void_002
+    4300014: liquid_loaded_001
+    4300016: needle_001
+    4300018: bottle_001
+    4300020: liquid_unloaded_001
+    4300022: hcup_002
+    4300024: potion_002
+    4300026: piston_002
+    4300028: injection_void_001
+    4300030: piston_001
+    4300032: seal_locked_001
+    4300034: potion_001
+    4300036: hcup_001
+    4300038: bigcup_001
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
