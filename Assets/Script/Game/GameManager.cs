@@ -17,13 +17,13 @@ public class GameManager : MonoBehaviour {
 
 		//Spawnpoint
 		Vector3 spawnPointPosition = new Vector3(
-			spawnPoint.transform.position.x + Random.Range(-4f, 4f),
-			spawnPoint.transform.position.y +
+			spawnPoint.transform.position.x,
+			spawnPoint.transform.position.y,
 			spawnPoint.transform.position.z);
-		spawnPointPosition += spawnPoint.transform.position;
 
 		GameObject player = PhotonNetwork.Instantiate
 			(prefabPlayer.name, spawnPointPosition, Quaternion.identity, 0);
+		//GameObject player = Instantiate(prefabPlayer, spawnPoint.transform);
 
 		// Make some common changes (to all players, including me)
 		PhotonView playerView = player.GetComponent<PhotonView> ();

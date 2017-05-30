@@ -11,6 +11,7 @@ public class MenuManager : MonoBehaviour {
 	public InputField inPseudo;
 	public GameObject lightSelectedHero;
 	public GameObject selectedRoom;
+	public string sceneToLoad;
 
 	private string selectedHero = "";
 	private byte nbMaxPlayers = 2;
@@ -69,7 +70,7 @@ public class MenuManager : MonoBehaviour {
 	}
 
 	void OnJoinedRoom(){
-		PhotonNetwork.LoadLevel ("main");
+		PhotonNetwork.LoadLevel (sceneToLoad);
 	}
 		
 	void OnJoinedLobby(){

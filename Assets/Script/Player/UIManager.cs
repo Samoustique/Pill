@@ -5,7 +5,12 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour {
 
-	//public Image imgLife;
+	public Image imgLifeBackground;
+	public Image imgLife;
+	public Sprite sprLightGreen;
+	public Sprite sprGreen;
+	public Sprite sprLightRed;
+	public Sprite sprRed;
 	//public Text txtLife;
 	public Text txtTotalBullets;
 	public GameObject goBullets;
@@ -31,8 +36,15 @@ public class UIManager : MonoBehaviour {
 	}
 	
 	public void UpdateLife (int life) {
-		/*life = Mathf.Clamp(life, 0, 100);
+		life = Mathf.Clamp(life, 0, 100);
+		if (life > 30) {
+			imgLifeBackground.sprite = sprLightGreen;
+			imgLife.sprite = sprGreen;
+		} else {
+			imgLifeBackground.sprite = sprLightRed;
+			imgLife.sprite = sprRed;
+		}
 		imgLife.fillAmount = (float) life / 100;
-		txtLife.text = life + "%";*/
+		//txtLife.text = life + "%";
 	}
 }
