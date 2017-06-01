@@ -1,19 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
-	public Text txtRoom;
-	public Text txtPlayerList;
 	public GameObject prefabPlayer;
 	public GameObject spawnPoint;
 
+	private UIRoomManager uiRoomManagerScript;
+
 	void Start () {
 		// This part is only played for MY character
-		txtRoom.text = PhotonNetwork.room.Name;
+		uiRoomManagerScript = GameObject.Find ("CanvasRoom").GetComponent<UIRoomManager> ();
+
+		uiRoomManagerScript.UpdateRoom(PhotonNetwork.room.Name);
 
 		//Spawnpoint
 		Vector3 spawnPointPosition = new Vector3(
@@ -62,10 +63,11 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void UpdateListOfPlayers () {
-		txtPlayerList.text = null;
+		List<string> players = new List<string> ();
 		foreach (PhotonPlayer player in PhotonNetwork.playerList) {
-			txtPlayerList.text += player.NickName + "\n";	
+			players.Add(player.NickName);
 		}
+		uiRoomManagerScript.UpdateListOfPlayers (players, PhotonNetwork.player.NickName);
 	}
 
 	public void BackToLogin(){
@@ -82,6 +84,7 @@ public class GameManager : MonoBehaviour {
 
 	void OnPhotonPlayerConnected(){ // a player has just joined the room
 		Debug.Log("OnPhotonPlayerConnected"); 
+		UpdateListOfPlayers ();
 	}
 
 	void OnPhotonPlayerDisconnected(){

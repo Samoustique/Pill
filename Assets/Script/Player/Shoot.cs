@@ -19,7 +19,7 @@ public abstract class Shoot : MonoBehaviour {
 	private Ray ray;
 	private RaycastHit hit;
 	private float nextFire;
-	private UIManager uiManagerScript;
+	private UIPlayerManager uiPlayerManagerScript;
 	private PhotonView view;
 	
 	void Start(){
@@ -28,8 +28,8 @@ public abstract class Shoot : MonoBehaviour {
 		if (view.isMine) {
 			nbLoadedBullet = nbMagazineCapacity;
 			nbTotalBullet -= nbMagazineCapacity;
-			uiManagerScript = GameObject.Find ("CanvasPlayer").GetComponent<UIManager> ();
-			uiManagerScript.UpdateTxtTotalBullet (nbTotalBullet, nbLoadedBullet, GetPrefabBullet ());
+			uiPlayerManagerScript = GameObject.Find ("CanvasPlayer").GetComponent<UIPlayerManager> ();
+			uiPlayerManagerScript.UpdateTxtTotalBullet (nbTotalBullet, nbLoadedBullet, GetPrefabBullet ());
 			StartChild ();
 		}
 	}
@@ -42,8 +42,8 @@ public abstract class Shoot : MonoBehaviour {
 	protected abstract GameObject GetPrefabBullet ();
 	
 	void OnEnable(){
-		if(uiManagerScript != null){
-			uiManagerScript.UpdateTxtTotalBullet(nbTotalBullet, nbLoadedBullet, GetPrefabBullet());
+		if(uiPlayerManagerScript != null){
+			uiPlayerManagerScript.UpdateTxtTotalBullet(nbTotalBullet, nbLoadedBullet, GetPrefabBullet());
 		}
 	}
 	
@@ -100,7 +100,7 @@ public abstract class Shoot : MonoBehaviour {
 		view.RPC ("SoundShoot", PhotonTargets.All);
 
 		nbLoadedBullet--;
-		uiManagerScript.UpdateTxtTotalBullet(nbTotalBullet, nbLoadedBullet, GetPrefabBullet());
+		uiPlayerManagerScript.UpdateTxtTotalBullet(nbTotalBullet, nbLoadedBullet, GetPrefabBullet());
 		FireChild();
 
 		Vector2 screenCenterPoint = new Vector2(Screen.width / 2, Screen.height / 2);
@@ -136,11 +136,11 @@ public abstract class Shoot : MonoBehaviour {
 			nbLoadedBullet += nbTotalBullet;
 			nbTotalBullet = 0;
 		}
-		uiManagerScript.UpdateTxtTotalBullet(nbTotalBullet, nbLoadedBullet, GetPrefabBullet());
+		uiPlayerManagerScript.UpdateTxtTotalBullet(nbTotalBullet, nbLoadedBullet, GetPrefabBullet());
 	}
 
 	public void AddMagazine(){
 		nbTotalBullet += nbMagazineCapacity;
-		uiManagerScript.UpdateTxtTotalBullet(nbTotalBullet, nbLoadedBullet, GetPrefabBullet());
+		uiPlayerManagerScript.UpdateTxtTotalBullet(nbTotalBullet, nbLoadedBullet, GetPrefabBullet());
 	}
 }

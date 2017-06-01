@@ -6,24 +6,29 @@ public class HealthManager : MonoBehaviour {
 
 	public int life = 100;
 	
-	private UIManager uiManagerScript;
+	private UIPlayerManager uiPlayerManagerScript;
+	private UIRoomManager uiRoomManagerScript;
 	private bool isDead = false;
 	private PhotonView view;
 
 	void Start () {
 		view = GetComponent<PhotonView> ();
 
+		uiRoomManagerScript = GameObject.Find ("CanvasRoom").GetComponentInChildren<UIRoomManager> ();
+
 		if (view.isMine) {
-			uiManagerScript = GameObject.Find ("CanvasPlayer").GetComponentInChildren<UIManager> ();
-			uiManagerScript.UpdateLife (life);
+			uiPlayerManagerScript = GameObject.Find ("CanvasPlayer").GetComponentInChildren<UIPlayerManager> ();
+			uiPlayerManagerScript.UpdateLife (life);
 		}
 	}
 
 	public void TakeDamage (int damage){
 		life -= damage;
 
+		view.RPC ("UpdateRoomLife", PhotonTargets.OthersBuffered, PhotonNetwork.player.NickName, life);
+
 		if (view.isMine) {
-			uiManagerScript.UpdateLife (life);
+			uiPlayerManagerScript.UpdateLife (life);
 
 			if (life <= 0 && !isDead) {
 				isDead = true;
@@ -31,5 +36,11 @@ public class HealthManager : MonoBehaviour {
 				//GetComponent<PlayerDead> ().Die ();
 			}
 		}
+	}
+
+	[PunRPC]
+	protected void UpdateRoomLife(string player, int life){
+		Debug.Log (player + " " + life);
+		uiRoomManagerScript.UpdatePlayerLife (player, life);
 	}
 }

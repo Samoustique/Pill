@@ -107,7 +107,7 @@ public class ZombiAI : MonoBehaviour {
 
 	public void DamageToPlayer(){
 		//audioPunctualSource.PlayOneShot (soundAttack);
-		zombiHurts.NotifyIsHitting();
+		zombiHurts.NotifyIsHitting(damage);
 	}
 
 	public void Healed(){

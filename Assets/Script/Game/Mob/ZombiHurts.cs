@@ -21,10 +21,10 @@ public class ZombiHurts : MonoBehaviour {
 		}
 	}
 
-	public void NotifyIsHitting(){
+	public void NotifyIsHitting(int damage){
 		if (isTouchingPlayer) {
 			HealthManager healthManagerScript = player.GetComponentInChildren<HealthManager> ();
-			healthManagerScript.TakeDamage (10);
+			healthManagerScript.TakeDamage (damage);
 		}
 	}
 }
