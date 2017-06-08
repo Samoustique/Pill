@@ -7,7 +7,7 @@ public class ZombiAI : MonoBehaviour {
 	public GameObject constantAudio;
 	public AudioClip soundAttack;
 	public float distanceAttack = 2f;
-	public float distanceHeal = 2f;
+	public float distanceHeal = 2.5f;
 	public int damage = 10;
 	public float minSpeed = 1f;
 	public float maxSpeed = 2f;
@@ -114,7 +114,7 @@ public class ZombiAI : MonoBehaviour {
 	}
 
 	public void DamageToPlayer(){
-		//audioPunctualSource.PlayOneShot (soundAttack);
+		audioPunctualSource.PlayOneShot (soundAttack);
 		zombiHurts.NotifyIsHitting(damage);
 	}
 

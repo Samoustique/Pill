@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class HealthManager : MonoBehaviour {
-
 	public int life = 100;
 	
 	private UIPlayerManager uiPlayerManagerScript;
@@ -23,11 +22,11 @@ public class HealthManager : MonoBehaviour {
 	}
 
 	public void TakeDamage (int damage){
-		life -= damage;
-
-		view.RPC ("UpdateRoomLife", PhotonTargets.OthersBuffered, PhotonNetwork.player.NickName, life);
-
 		if (view.isMine) {
+			life -= damage;
+
+			view.RPC ("UpdateRoomLife", PhotonTargets.OthersBuffered, PhotonNetwork.player.NickName, life);
+
 			uiPlayerManagerScript.UpdateLife (life);
 
 			if (life <= 0 && !isDead) {

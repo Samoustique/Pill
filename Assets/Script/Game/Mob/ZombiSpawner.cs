@@ -7,11 +7,13 @@ public class ZombiSpawner : MonoBehaviour {
 	public GameObject objectToSpawn;
 
 	private float nextSpawn;
+	private bool isContinue = true;
 
 	void Update () {
-		if(Time.time > nextSpawn){
+		if(Time.time > nextSpawn && isContinue){
 			nextSpawn = Time.time + spawnRate;
 			PhotonNetwork.Instantiate(objectToSpawn.name, transform.position, Quaternion.identity, 0);
+			isContinue = false;
 		}
 	}
 }
