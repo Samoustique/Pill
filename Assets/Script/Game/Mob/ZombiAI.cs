@@ -13,7 +13,7 @@ public class ZombiAI : MonoBehaviour {
 	public float maxSpeed = 2f;
 
 	private GameObject target;
-	private Collider collider;
+	private Collider col;
 	private NavMeshAgent agent;
 	private Animator anim;
 	private AudioSource audioPunctualSource;
@@ -28,7 +28,7 @@ public class ZombiAI : MonoBehaviour {
 	void Start () {
 		audioPunctualSource = GetComponent<AudioSource> ();
 		audioConstantSource = constantAudio.GetComponent<AudioSource> ();
-		collider = GetComponent<Collider> ();
+		col = GetComponent<Collider> ();
 		anim = GetComponent<Animator> ();
 		agent = GetComponent<NavMeshAgent> ();
 		zombiHurts = GetComponentInChildren<ZombiHurts> ();
@@ -40,6 +40,12 @@ public class ZombiAI : MonoBehaviour {
 		foreach(Rigidbody rb in rigidBodies){
 			rb.isKinematic = true;
 		}
+
+		/*List<Collider> tete = new List<Collider>(GetComponentsInChildren<Collider> ());
+
+		foreach(Collider rb in tete){
+			rb.enabled = false;
+		}*/
 	}
 
 	void Update () {
@@ -83,6 +89,8 @@ public class ZombiAI : MonoBehaviour {
 			anim.SetTrigger ("eat");
 			// stay still
 			agent.SetDestination (transform.position);
+			agent.enabled = false;
+			col.enabled = false;
 		} else {
 			anim.SetBool ("walk", true);
 			agent.SetDestination (medic.Key.transform.position);
@@ -116,8 +124,6 @@ public class ZombiAI : MonoBehaviour {
 
 	private IEnumerator FallDown(){
 		anim.enabled = false;
-		agent.enabled = false;
-		collider.enabled = false;
 		audioPunctualSource.enabled = false;
 		audioConstantSource.enabled = false;
 

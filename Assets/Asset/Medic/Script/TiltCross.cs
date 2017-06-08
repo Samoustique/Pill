@@ -4,25 +4,21 @@ using UnityEngine;
 
 public class TiltCross : MonoBehaviour {
 	public bool isAnimated = false;
-
 	public bool isRotating = false;
 	public bool isFloating = false;
 	public bool isScaling = false;
-
 	public Vector3 rotationAngle;
-	public float rotationSpeed;
-
-	public float floatSpeed;
-	private bool goingUp = true;
-	public float floatRate;
-	private float floatTimer;
-
 	public Vector3 startScale;
 	public Vector3 endScale;
-
-	private bool scalingUp = true;
+	public float rotationSpeed;
+	public float floatSpeed;
+	public float floatRate;
 	public float scaleSpeed;
 	public float scaleRate;
+
+	private bool goingUp = true;
+	private float floatTimer;
+	private bool scalingUp = true;
 	private float scaleTimer;
 
 	void Update () {
@@ -43,7 +39,7 @@ public class TiltCross : MonoBehaviour {
 				} else if(!goingUp && floatTimer >= floatRate){
 					goingUp = true;
 					floatTimer = 0;
-					floatSpeed = +floatSpeed;
+					//floatSpeed = +floatSpeed;
 				}
 			}
 
