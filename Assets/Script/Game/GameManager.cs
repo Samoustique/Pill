@@ -6,7 +6,11 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour {
 
 	public GameObject prefabPlayer;
+	public GameObject prefabZombiSpawner;
+	public GameObject prefabHumanSpawner;
 	public GameObject spawnPoint;
+	public GameObject zombiSpawnPoint;
+	public GameObject humanSpawnPoint;
 
 	private UIRoomManager uiRoomManagerScript;
 
@@ -53,6 +57,13 @@ public class GameManager : MonoBehaviour {
 		}
 
 		UpdateListOfPlayers ();
+
+		if (PhotonNetwork.isMasterClient) {
+			// Zombi spawner
+			PhotonNetwork.InstantiateSceneObject(prefabZombiSpawner.name, zombiSpawnPoint.transform.position, Quaternion.identity, 0, null);
+			// Human spawner
+			PhotonNetwork.InstantiateSceneObject(prefabHumanSpawner.name, humanSpawnPoint.transform.position, Quaternion.identity, 0, null);
+		}
 	}
 
 	private void SetLayerRecursively(GameObject obj, int layerNumber){

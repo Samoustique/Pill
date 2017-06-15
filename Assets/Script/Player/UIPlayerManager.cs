@@ -31,7 +31,6 @@ public class UIPlayerManager : UIManager {
 	}
 	
 	public void UpdateLife (int life) {
-		Debug.Log ("Player");
 		UpdateBarLife (imgLifeBackground, imgLife, life);
 		//txtLife.text = life + "%";
 	}

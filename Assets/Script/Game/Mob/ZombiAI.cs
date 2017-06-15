@@ -21,14 +21,20 @@ public class ZombiAI : MonoBehaviour {
 	private GameObject[] targetsPlayer;
 	private GameObject[] targetsMedic;
 	private bool isHealing;
+	private bool isDead;
 	private HealthManager healthManagerScript;
 	private List<Rigidbody> rigidBodies;
 	private ZombiHurts zombiHurts;
+	private float impactEndTime = 0;
+	private Vector3 impact;
+	private Rigidbody impactTarget = null;
+	private PhotonView view;
 
 	void Start () {
 		audioPunctualSource = GetComponent<AudioSource> ();
 		audioConstantSource = constantAudio.GetComponent<AudioSource> ();
 		col = GetComponent<Collider> ();
+		view = GetComponent<PhotonView> ();
 		anim = GetComponent<Animator> ();
 		agent = GetComponent<NavMeshAgent> ();
 		zombiHurts = GetComponentInChildren<ZombiHurts> ();
@@ -50,21 +56,27 @@ public class ZombiAI : MonoBehaviour {
 
 	void Update () {
 		if (!isHealing) {
-			targetsPlayer = GameObject.FindGameObjectsWithTag ("Player");
-			targetsMedic = GameObject.FindGameObjectsWithTag ("Medic");
-			KeyValuePair<GameObject, float> closestPlayer = GetClosest (targetsPlayer);
-			KeyValuePair<GameObject, float> closestMedic = GetClosest (targetsMedic);
+			if (!isDead) {
+				targetsPlayer = GameObject.FindGameObjectsWithTag ("Player");
+				targetsMedic = GameObject.FindGameObjectsWithTag ("Medic");
+				KeyValuePair<GameObject, float> closestPlayer = GetClosest (targetsPlayer);
+				KeyValuePair<GameObject, float> closestMedic = GetClosest (targetsMedic);
 
-			if (closestPlayer.Key == null && closestMedic.Key != null) {
-				GoForMedic (closestMedic);
-			} else if (closestPlayer.Key != null && closestMedic.Key == null) {
-				GoForPlayer (closestPlayer);
-			} else if (closestPlayer.Key != null && closestMedic.Key != null) {
-				if (closestPlayer.Value < closestMedic.Value) {
-					GoForPlayer (closestPlayer);
-				} else {
+				if (closestPlayer.Key == null && closestMedic.Key != null) {
 					GoForMedic (closestMedic);
+				} else if (closestPlayer.Key != null && closestMedic.Key == null) {
+					GoForPlayer (closestPlayer);
+				} else if (closestPlayer.Key != null && closestMedic.Key != null) {
+					if (closestPlayer.Value < closestMedic.Value) {
+						GoForPlayer (closestPlayer);
+					} else {
+						GoForMedic (closestMedic);
+					}
 				}
+			}
+
+			if (Time.time < impactEndTime && impactTarget != null) {
+				impactTarget.AddForce (impact, ForceMode.VelocityChange);
 			}
 		}
 	}
@@ -123,6 +135,50 @@ public class ZombiAI : MonoBehaviour {
 	}
 
 	private IEnumerator FallDown(){
+		/*anim.enabled = false;
+		audioPunctualSource.enabled = false;
+		audioConstantSource.enabled = false;
+
+		foreach(Rigidbody rb in rigidBodies){
+			rb.isKinematic = false;
+		}*/
+		view.RPC ("DisableZombi", PhotonTargets.AllBuffered);
+		yield return new WaitForSeconds (5f);
+		//view.RPC ("DestroyZombi", PhotonTargets.AllBuffered);
+	}
+
+	public void IsKilled (GameObject gameObjectHit, Vector3 direction){
+		//if (PhotonNetwork.isMasterClient) {
+			if (!isDead) {
+				Debug.Log ("IsKilled");
+				isDead = true;
+
+				/*// stay still
+			agent.SetDestination (transform.position);
+			agent.enabled = false;
+			col.enabled = false;*/
+
+				StartCoroutine (FallDown ());
+			}
+
+			impactTarget = gameObjectHit.GetComponent<Rigidbody> ();
+			view.RPC ("MoveRigidBody", PhotonTargets.AllBuffered, direction);
+		//}
+	}
+
+	[PunRPC]
+	protected void DestroyZombi(){
+		PhotonNetwork.Destroy (view);
+	}
+
+	[PunRPC]
+	protected void MoveRigidBody(Vector3 direction){
+		impact = direction * 2.0f;
+		impactEndTime = Time.time + 0.25f;
+	}
+
+	[PunRPC]
+	protected void DisableZombi(){
 		anim.enabled = false;
 		audioPunctualSource.enabled = false;
 		audioConstantSource.enabled = false;
@@ -130,8 +186,10 @@ public class ZombiAI : MonoBehaviour {
 		foreach(Rigidbody rb in rigidBodies){
 			rb.isKinematic = false;
 		}
-		yield return new WaitForSeconds (3f);
-		//Destroy (gameObject);
-	}
 
+		// stay still
+		agent.SetDestination (transform.position);
+		agent.enabled = false;
+		col.enabled = false;
+	}
 }

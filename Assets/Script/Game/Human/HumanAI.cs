@@ -51,6 +51,8 @@ public class HumanAI : MonoBehaviour {
 		} else {
 			GoForZombi (closestZombi);
 		}
+
+		Debug.Log(agent.destination);
 	}
 
 	private void GoForZombi (KeyValuePair<GameObject, float> zombi){

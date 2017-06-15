@@ -35,7 +35,6 @@ public class UIRoomManager : UIManager {
 		foreach(Transform child in playersUISpawn.transform){
 			GameObject.Destroy (child.gameObject);
 		}
-		Debug.Log (players.Count);
 
 		Vector3 pos = playersUISpawn.transform.position;
 		foreach (string name in players) {

@@ -7,11 +7,19 @@ public class HumanSpawner : MonoBehaviour {
 	public GameObject objectToSpawn;
 
 	private float nextSpawn;
+	private bool isContinue = true;
 
 	void Update () {
-		if(Time.time > nextSpawn){
-			nextSpawn = Time.time + spawnRate;
-			PhotonNetwork.Instantiate(objectToSpawn.name, transform.position, Quaternion.identity, 0);
+		if (isContinue && Time.time > nextSpawn) {
+			if (PhotonNetwork.isMasterClient) {
+				nextSpawn = Time.time + spawnRate;
+				Spawn ();
+			}
+			isContinue = false;
 		}
+	}
+
+	protected void Spawn(){
+		PhotonNetwork.InstantiateSceneObject(objectToSpawn.name, transform.position, Quaternion.identity, 0, null);
 	}
 }

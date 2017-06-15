@@ -21,6 +21,5 @@ public class UIManager : MonoBehaviour {
 			imgLife.sprite = sprRed;
 		}
 		imgLife.fillAmount = (float) life / 100;
-		Debug.Log ("UpdateBarLife    life : " + life);
 	}
 }
