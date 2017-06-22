@@ -19,7 +19,6 @@ public class UIRoomManager : UIManager {
 				if (grandChild.name == "txtPlayer") {
 					if(grandChild.gameObject.GetComponent<Text>().text == player){
 						GameObject imgLifeBackground = grandChild.transform.parent.Find ("ImgLifeBackground").gameObject;
-						Debug.Log ("Room");
 						UpdateBarLife (
 							imgLifeBackground.GetComponent<Image>() as Image,
 							imgLifeBackground.transform.Find("ImgLife").GetComponent<Image>() as Image,
@@ -50,8 +49,6 @@ public class UIRoomManager : UIManager {
 					if (name == playerNickName) {
 						child.gameObject.SetActive (false);
 					} else {
-						Debug.Log ("Room Update General");
-
 						UpdateBarLife (
 							child.gameObject.GetComponent<Image>() as Image,
 							child.transform.Find("ImgLife").GetComponent<Image>() as Image,

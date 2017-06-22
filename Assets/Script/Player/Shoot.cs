@@ -109,26 +109,27 @@ public abstract class Shoot : MonoBehaviour {
 
 		if(Physics.Raycast(ray, out hit, Camera.main.farClipPlane)){
 			// Something has been hit
-			if(hit.transform.gameObject.tag == "Zombi"){
-				ZombiAI zombiScript = hit.transform.gameObject.GetComponent<ZombiAI>() as ZombiAI;
-				zombiScript.IsHurt (hit.transform.gameObject, ray.direction, damage);
-			} else if(hit.transform.gameObject.tag == "ZombiPart"){
-				ZombiAI zombiScript = hit.transform.root.gameObject.GetComponent<ZombiAI>() as ZombiAI;
-				zombiScript.IsHurt (hit.transform.gameObject, ray.direction, damage);
-			} else if(hit.transform.gameObject.tag == "Human"){
-				HumanAI humanScript = hit.transform.gameObject.GetComponent<HumanAI>() as HumanAI;
-				humanScript.IsHurt (hit.transform.gameObject, ray.direction, damage);
-			} else if(hit.transform.gameObject.tag == "HumanPart"){
-				GameObject goParent = hit.transform.parent.gameObject;
-				while (goParent.tag != "Human") {
-					goParent = goParent.transform.parent.gameObject;
-				}
-				HumanAI humanScript = goParent.GetComponent<HumanAI>() as HumanAI;
-				if (humanScript != null) {
-					humanScript.IsHurt (hit.transform.gameObject, ray.direction, damage);
-				}
-			} else if(hit.transform.gameObject.tag == "Props"){
-				view.RPC ("ShootOnProps", PhotonTargets.All, hit.point, hit.normal);
+			string tag = hit.transform.gameObject.tag;
+			switch (tag) {
+				case "Zombi":
+				case "Human":
+					MobAI aiScript = hit.transform.gameObject.GetComponent<MobAI>() as MobAI;
+					aiScript.IsHurt (hit.transform.gameObject, ray.direction, damage);
+					break;
+				case "ZombiPart":
+				case "HumanPart":
+					GameObject goParent = hit.transform.parent.gameObject;
+					while (goParent != null && goParent.tag != "Human" && goParent.tag != "Zombi") {
+						goParent = goParent.transform.parent.gameObject;
+					}
+					aiScript = goParent.GetComponent<MobAI>() as MobAI;
+					if (aiScript != null) {
+						aiScript.IsHurt (hit.transform.gameObject, ray.direction, damage);
+					}
+					break;
+				case "Props":
+					view.RPC ("ShootOnProps", PhotonTargets.All, hit.point, hit.normal);
+					break;
 			}
 		}
 	}

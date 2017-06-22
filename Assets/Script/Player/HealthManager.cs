@@ -39,7 +39,6 @@ public class HealthManager : MonoBehaviour {
 
 	[PunRPC]
 	protected void UpdateRoomLife(string player, int life){
-		Debug.Log (player + " " + life);
 		uiRoomManagerScript.UpdatePlayerLife (player, life);
 	}
 }

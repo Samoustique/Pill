@@ -5,6 +5,7 @@ using UnityEngine;
 public class ZombiSpawner : MonoBehaviour {
 	public float spawnRate = 2f;
 	public GameObject objectToSpawn;
+	public int nbMaxZombi = 10;
 	public bool isActivated = true;
 	public bool isSpawningOnlyOne = false;
 
@@ -12,12 +13,23 @@ public class ZombiSpawner : MonoBehaviour {
 	private bool isContinuing = true;
 
 	void Update () {
-		if (isActivated && isContinuing && Time.time > nextSpawn) {
+		GameObject[] zombis = GameObject.FindGameObjectsWithTag ("Zombi");
+		GatherZombis (zombis);
+
+		if (isActivated && isContinuing && zombis.Length < nbMaxZombi && Time.time > nextSpawn) {
 			if (PhotonNetwork.isMasterClient) {
 				nextSpawn = Time.time + spawnRate;
 				Spawn ();
 			}
 			isContinuing = !isSpawningOnlyOne;
+		}
+	}
+
+	private void GatherZombis(GameObject[] zombis){
+		Transform zombisTransform = GameObject.Find ("Zombis").transform;
+
+		foreach (GameObject zombi in zombis) {
+			zombi.transform.SetParent (zombisTransform);
 		}
 	}
 
