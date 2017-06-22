@@ -20,11 +20,9 @@ public class ZombiAI : MonoBehaviour {
 	private AudioSource audioConstantSource;
 	private GameObject[] targetsPlayer;
 	private GameObject[] targetsMedic;
-	private bool isHealing;
-	private bool isDead;
-	private HealthManager healthManagerScript;
+	private MobHealthManager healthManagerScript;
+	private ZombiHurts zombiHurtsScript;
 	private List<Rigidbody> rigidBodies;
-	private ZombiHurts zombiHurts;
 	private float impactEndTime = 0;
 	private Vector3 impact;
 	private Rigidbody impactTarget = null;
@@ -37,7 +35,8 @@ public class ZombiAI : MonoBehaviour {
 		view = GetComponent<PhotonView> ();
 		anim = GetComponent<Animator> ();
 		agent = GetComponent<NavMeshAgent> ();
-		zombiHurts = GetComponentInChildren<ZombiHurts> ();
+		zombiHurtsScript = GetComponentInChildren<ZombiHurts> ();
+		healthManagerScript = GetComponentInChildren<MobHealthManager> ();
 
 		rigidBodies = new List<Rigidbody>(GetComponentsInChildren<Rigidbody> ());
 		rigidBodies.Remove (GetComponent<Rigidbody> ());
@@ -46,17 +45,11 @@ public class ZombiAI : MonoBehaviour {
 		foreach(Rigidbody rb in rigidBodies){
 			rb.isKinematic = true;
 		}
-
-		/*List<Collider> tete = new List<Collider>(GetComponentsInChildren<Collider> ());
-
-		foreach(Collider rb in tete){
-			rb.enabled = false;
-		}*/
 	}
 
 	void Update () {
-		if (!isHealing) {
-			if (!isDead) {
+		if (!healthManagerScript.isHealing) {
+			if (healthManagerScript.life > 0) {
 				targetsPlayer = GameObject.FindGameObjectsWithTag ("Player");
 				targetsMedic = GameObject.FindGameObjectsWithTag ("Medic");
 				KeyValuePair<GameObject, float> closestPlayer = GetClosest (targetsPlayer);
@@ -97,7 +90,7 @@ public class ZombiAI : MonoBehaviour {
 		anim.SetBool ("attack", false);
 
 		if (medic.Value < distanceHeal) {
-			isHealing = true;
+			healthManagerScript.isHealing = true;
 			anim.SetTrigger ("eat");
 			// stay still
 			agent.SetDestination (transform.position);
@@ -127,50 +120,27 @@ public class ZombiAI : MonoBehaviour {
 
 	public void DamageToPlayer(){
 		audioPunctualSource.PlayOneShot (soundAttack);
-		zombiHurts.NotifyIsHitting(damage);
+		zombiHurtsScript.NotifyIsHitting(damage);
 	}
 
 	public void Healed(){
-		StartCoroutine (FallDown ());
+		FallDown ();
 	}
 
-	private IEnumerator FallDown(){
-		/*anim.enabled = false;
-		audioPunctualSource.enabled = false;
-		audioConstantSource.enabled = false;
-
-		foreach(Rigidbody rb in rigidBodies){
-			rb.isKinematic = false;
-		}*/
+	private void FallDown(){
 		view.RPC ("DisableZombi", PhotonTargets.AllBuffered);
-		yield return new WaitForSeconds (5f);
-		//view.RPC ("DestroyZombi", PhotonTargets.AllBuffered);
 	}
 
-	public void IsKilled (GameObject gameObjectHit, Vector3 direction){
-		//if (PhotonNetwork.isMasterClient) {
-			if (!isDead) {
-				Debug.Log ("IsKilled");
-				isDead = true;
+	public void IsHurt (GameObject gameObjectHit, Vector3 direction, int damage){
+		if (healthManagerScript.life > 0) {
+			healthManagerScript.TakeDamage(damage);
+			FallDown ();
+		}
 
-				/*// stay still
-			agent.SetDestination (transform.position);
-			agent.enabled = false;
-			col.enabled = false;*/
-
-				StartCoroutine (FallDown ());
-			}
-
-			impactTarget = gameObjectHit.GetComponent<Rigidbody> ();
-			view.RPC ("MoveRigidBody", PhotonTargets.AllBuffered, direction);
-		//}
+		impactTarget = gameObjectHit.GetComponent<Rigidbody> ();
+		view.RPC ("MoveRigidBody", PhotonTargets.AllBuffered, direction);
 	}
-
-	[PunRPC]
-	protected void DestroyZombi(){
-		PhotonNetwork.Destroy (view);
-	}
-
+		
 	[PunRPC]
 	protected void MoveRigidBody(Vector3 direction){
 		impact = direction * 2.0f;

@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 3e3cd226fdc6f8842945281a58ea7634
-timeCreated: 1496846295
+guid: 9a4adecfbf990ee43acbc65b1438bfce
+timeCreated: 1497520720
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -141,7 +141,7 @@ ModelImporter:
     400130: mixamorig:Spine1
     400132: mixamorig:Spine2
     400134: //RootNode
-    7400000: sad_idle
+    7400000: running_inPlace
     9500000: //RootNode
   materials:
     importMaterials: 1
@@ -167,10 +167,10 @@ ModelImporter:
     extraExposedTransformPaths: []
     clipAnimations:
     - serializedVersion: 16
-      name: sad_idle
+      name: running_inPlace
       takeName: mixamo.com
       firstFrame: 0
-      lastFrame: 84
+      lastFrame: 19
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

@@ -14,6 +14,7 @@ public abstract class Shoot : MonoBehaviour {
 	public int nbMagazineCapacity;
 	public int nbLoadedBullet = -1;
 	public int nbTotalBullet;
+	public int damage = 100;
 	public bool isAutomatic = true;
 	
 	private Ray ray;
@@ -109,21 +110,23 @@ public abstract class Shoot : MonoBehaviour {
 		if(Physics.Raycast(ray, out hit, Camera.main.farClipPlane)){
 			// Something has been hit
 			if(hit.transform.gameObject.tag == "Zombi"){
-				// destroy the targeted zombi
-				//Destroy(hit.transform.gameObject);
-				Debug.Log("zombi");
 				ZombiAI zombiScript = hit.transform.gameObject.GetComponent<ZombiAI>() as ZombiAI;
-				Debug.Log(zombiScript);
-
-				zombiScript.IsKilled (hit.transform.gameObject, ray.direction);
+				zombiScript.IsHurt (hit.transform.gameObject, ray.direction, damage);
 			} else if(hit.transform.gameObject.tag == "ZombiPart"){
-				// destroy the entire zombi
-				//Destroy(hit.transform.root.gameObject);
-				Debug.Log("zombi part");
 				ZombiAI zombiScript = hit.transform.root.gameObject.GetComponent<ZombiAI>() as ZombiAI;
-				Debug.Log(zombiScript);
-
-				zombiScript.IsKilled (hit.transform.gameObject, ray.direction);
+				zombiScript.IsHurt (hit.transform.gameObject, ray.direction, damage);
+			} else if(hit.transform.gameObject.tag == "Human"){
+				HumanAI humanScript = hit.transform.gameObject.GetComponent<HumanAI>() as HumanAI;
+				humanScript.IsHurt (hit.transform.gameObject, ray.direction, damage);
+			} else if(hit.transform.gameObject.tag == "HumanPart"){
+				GameObject goParent = hit.transform.parent.gameObject;
+				while (goParent.tag != "Human") {
+					goParent = goParent.transform.parent.gameObject;
+				}
+				HumanAI humanScript = goParent.GetComponent<HumanAI>() as HumanAI;
+				if (humanScript != null) {
+					humanScript.IsHurt (hit.transform.gameObject, ray.direction, damage);
+				}
 			} else if(hit.transform.gameObject.tag == "Props"){
 				view.RPC ("ShootOnProps", PhotonTargets.All, hit.point, hit.normal);
 			}

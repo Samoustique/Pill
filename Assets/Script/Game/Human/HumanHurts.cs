@@ -23,7 +23,7 @@ public class HumanHurts : MonoBehaviour {
 
 	public void NotifyIsHitting(int damage){
 		if (isTouchingZombi) {
-			ZombiHealthManager healthManagerScript = player.GetComponentInChildren<ZombiHealthManager> ();
+			MobHealthManager healthManagerScript = player.GetComponentInChildren<MobHealthManager> ();
 			healthManagerScript.TakeDamage (damage);
 		}
 	}
