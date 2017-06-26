@@ -67,6 +67,7 @@ public class ZombiAI : MobAI {
 	}
 
 	public void Healed(){
+		healthManagerScript.isHealing = true;
 		FallDown ();
 	}
 }

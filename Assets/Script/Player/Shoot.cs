@@ -41,6 +41,7 @@ public abstract class Shoot : MonoBehaviour {
 	protected abstract void FireButEmptyChild ();
 	protected abstract void UpdateChild ();
 	protected abstract GameObject GetPrefabBullet ();
+	protected abstract float GetRange ();
 	
 	void OnEnable(){
 		if(uiPlayerManagerScript != null){
@@ -107,7 +108,7 @@ public abstract class Shoot : MonoBehaviour {
 		Vector2 screenCenterPoint = new Vector2(Screen.width / 2, Screen.height / 2);
 		ray = Camera.main.ScreenPointToRay(screenCenterPoint);
 
-		if(Physics.Raycast(ray, out hit, Camera.main.farClipPlane)){
+		if(Physics.Raycast(ray, out hit, GetRange())){
 			// Something has been hit
 			string tag = hit.transform.gameObject.tag;
 			switch (tag) {

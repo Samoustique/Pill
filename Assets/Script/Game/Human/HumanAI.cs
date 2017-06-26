@@ -31,7 +31,7 @@ public class HumanAI : MobAI {
 
 	protected override void UpdateChild (){
 		targetsZombis = GameObject.FindGameObjectsWithTag ("Zombi");
-		targetsZombis = RemoveDeadZombis (targetsZombis);
+		targetsZombis = RemoveDeadAndHealingZombis (targetsZombis);
 		KeyValuePair<GameObject, float> closestZombi = GetClosest (targetsZombis);
 
 		if (closestZombi.Key == null || closestZombi.Value > distanceChase) {
@@ -41,16 +41,15 @@ public class HumanAI : MobAI {
 		}
 	}
 
-	private GameObject[] RemoveDeadZombis (GameObject[] objects){
+	private GameObject[] RemoveDeadAndHealingZombis (GameObject[] objects){
 		List<GameObject> aliveZombis = new List<GameObject>();
 
 		foreach(GameObject obj in objects){
 			MobHealthManager healthScript = obj.GetComponent<MobHealthManager> () as MobHealthManager;
-			if (healthScript.life > 0) {
+			if (!healthScript.isHealing && healthScript.life > 0) {
 				aliveZombis.Add (obj);
 			}
 		}
-
 		return aliveZombis.ToArray();
 	}
 

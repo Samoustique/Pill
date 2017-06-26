@@ -6,6 +6,7 @@ public class PM40 : Shoot {
 
 	public Animator animFlame;
 	public GameObject prefabBullet;
+	public float range;
 
 	private Animator animWeapon;
 
@@ -46,5 +47,9 @@ public class PM40 : Shoot {
 
 	protected override GameObject GetPrefabBullet (){
 		return prefabBullet;
+	}
+
+	protected override float GetRange (){
+		return range;
 	}
 }

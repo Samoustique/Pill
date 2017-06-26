@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MobHealthManager : MonoBehaviour {
 	public int life = 100;
-	public bool isHealing;
+	public bool isHealing = false;
 
 	private PhotonView view;
 
