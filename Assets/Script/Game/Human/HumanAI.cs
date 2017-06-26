@@ -67,9 +67,9 @@ public class HumanAI : MobAI {
 
 	private void GoForZombi (KeyValuePair<GameObject, float> zombi){
 		if (zombi.Value < distanceAttack) {
-			anim.SetTrigger ("attack");
 			// stay still
 			agent.SetDestination (transform.position);
+			anim.SetTrigger ("attack");
 		} else if (!isFighting) {
 			anim.SetBool ("run", true);
 			anim.SetBool ("walk", false);
@@ -78,8 +78,7 @@ public class HumanAI : MobAI {
 		}
 	}
 
-	private void DamageToZombi(){
-		audioPunctualSource.PlayOneShot (soundAttack);
+	protected override void MakeDamage(){
 		humanHurtsScript.NotifyIsHitting(damage);
 	}
 

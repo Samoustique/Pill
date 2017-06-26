@@ -5,7 +5,6 @@ using UnityEngine.AI;
 
 public abstract class MobAI : MonoBehaviour {
 	public GameObject constantAudio;
-	public AudioClip soundAttack;
 	public float distanceAttack = 2f;
 	public int damage = 10;
 	public float minWalkingSpeed = 1f;
@@ -57,6 +56,7 @@ public abstract class MobAI : MonoBehaviour {
 
 	protected abstract void StartChild ();
 	protected abstract void UpdateChild ();
+	protected abstract void MakeDamage ();
 
 	protected KeyValuePair<GameObject, float> GetClosest(GameObject[] objects){
 		float min = float.MaxValue;
@@ -74,14 +74,13 @@ public abstract class MobAI : MonoBehaviour {
 		return new KeyValuePair<GameObject, float> (minObj, min);
 	}
 
-	protected void FallDown(){
+	public void FallDown(){
 		view.RPC ("DisableMob", PhotonTargets.AllBuffered);
 	}
 
-	public void IsHurt (GameObject gameObjectHit, Vector3 direction, int damage){
+	public void TakeDamage (GameObject gameObjectHit, Vector3 direction, int damage){
 		if (healthManagerScript.life > 0) {
 			healthManagerScript.TakeDamage(damage);
-			FallDown ();
 		}
 
 		impactTarget = gameObjectHit.GetComponent<Rigidbody> ();
@@ -105,7 +104,7 @@ public abstract class MobAI : MonoBehaviour {
 		}
 
 		// stay still
-		agent.SetDestination (transform.position);
+		//agent.SetDestination (transform.position);
 		agent.enabled = false;
 		col.enabled = false;
 	}

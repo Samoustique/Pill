@@ -62,8 +62,7 @@ public class ZombiAI : MobAI {
 		}
 	}
 
-	public void DamageToPlayer(){
-		audioPunctualSource.PlayOneShot (soundAttack);
+	protected override void MakeDamage(){
 		zombiHurtsScript.NotifyIsHitting(damage);
 	}
 

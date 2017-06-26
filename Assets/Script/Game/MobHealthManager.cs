@@ -23,8 +23,15 @@ public class MobHealthManager : MonoBehaviour {
 	}
 		
 	protected IEnumerator UpdateLifeMayDestroy(int damage){
+		Debug.Log ("life : " + life + " damage : " + damage);
 		life -= damage;
 		if (life <= 0) {
+			// to remove
+			Debug.Log ("boum");
+			MobAI mobAIScript = gameObject.GetComponent<MobAI> () as MobAI;
+			mobAIScript.FallDown ();
+			//////////
+
 			yield return new WaitForSeconds (5f);
 			Destroy (gameObject);
 

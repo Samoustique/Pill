@@ -7,21 +7,29 @@ public class ZombiSpawner : MonoBehaviour {
 	public GameObject objectToSpawn;
 	public int nbMaxZombi = 10;
 	public bool isActivated = true;
-	public bool isSpawningOnlyOne = false;
+	public bool hasToStopAtMax = true;
 
 	private float nextSpawn;
-	private bool isContinuing = true;
+	private int nbTotalZombi = 0;
 
 	void Update () {
-		GameObject[] zombis = GameObject.FindGameObjectsWithTag ("Zombi");
-		GatherZombis (zombis);
+		GameObject[] currentZombis = GameObject.FindGameObjectsWithTag ("Zombi");
+		GatherZombis (currentZombis);
 
-		if (isActivated && isContinuing && zombis.Length < nbMaxZombi && Time.time > nextSpawn) {
+		bool isContinuing = true;
+		if (nbTotalZombi >= nbMaxZombi && hasToStopAtMax) {
+			isContinuing = false;
+		}
+
+		if (isActivated &&
+			isContinuing &&
+			currentZombis.Length < nbMaxZombi &&
+			Time.time > nextSpawn) {
 			if (PhotonNetwork.isMasterClient) {
 				nextSpawn = Time.time + spawnRate;
 				Spawn ();
 			}
-			isContinuing = !isSpawningOnlyOne;
+			nbTotalZombi++;
 		}
 	}
 

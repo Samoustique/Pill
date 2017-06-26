@@ -114,7 +114,7 @@ public abstract class Shoot : MonoBehaviour {
 				case "Zombi":
 				case "Human":
 					MobAI aiScript = hit.transform.gameObject.GetComponent<MobAI>() as MobAI;
-					aiScript.IsHurt (hit.transform.gameObject, ray.direction, damage);
+					aiScript.TakeDamage (hit.transform.gameObject, ray.direction, damage);
 					break;
 				case "ZombiPart":
 				case "HumanPart":
@@ -124,7 +124,7 @@ public abstract class Shoot : MonoBehaviour {
 					}
 					aiScript = goParent.GetComponent<MobAI>() as MobAI;
 					if (aiScript != null) {
-						aiScript.IsHurt (hit.transform.gameObject, ray.direction, damage);
+						aiScript.TakeDamage (hit.transform.gameObject, ray.direction, damage);
 					}
 					break;
 				case "Props":

@@ -8,21 +8,29 @@ public class HumanSpawner : MonoBehaviour {
 	public GameObject objectToSpawn;
 	public int nbMaxHuman = 10;
 	public bool isActivated = true;
-	public bool isSpawningOnlyOne = false;
+	public bool hasToStopAtMax = true;
 
 	private float nextSpawn;
-	private bool isContinuing = true;
+	private int nbTotalHuman = 0;
 
 	void Update () {
-		GameObject[] humans = GameObject.FindGameObjectsWithTag ("Human");
-		GatherHumans (humans);
+		GameObject[] currentHumans = GameObject.FindGameObjectsWithTag ("Human");
+		GatherHumans (currentHumans);
 
-		if (isActivated && isContinuing && humans.Length < nbMaxHuman && Time.time > nextSpawn) {
+		bool isContinuing = true;
+		if (nbTotalHuman >= nbMaxHuman && hasToStopAtMax) {
+			isContinuing = false;
+		}
+
+		if (isActivated &&
+			isContinuing &&
+			currentHumans.Length < nbMaxHuman &&
+			Time.time > nextSpawn) {
 			if (PhotonNetwork.isMasterClient) {
 				nextSpawn = Time.time + spawnRate;
 				Spawn ();
 			}
-			isContinuing = !isSpawningOnlyOne;
+			nbTotalHuman++;
 		}
 	}
 
