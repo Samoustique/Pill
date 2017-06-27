@@ -67,7 +67,21 @@ public class ZombiAI : MobAI {
 	}
 
 	public void Healed(){
-		healthManagerScript.isHealing = true;
 		FallDown ();
+		view.RPC ("ZombiIntoHuman", PhotonTargets.AllBuffered);
+	}
+
+	[PunRPC]
+	private void ZombiIntoHuman(){
+		StartCoroutine (DestroyZombiCreateHuman());
+	}
+
+	private IEnumerator DestroyZombiCreateHuman(){
+		yield return new WaitForSeconds (1f);
+		GameManager gm = GameObject.Find ("_GameManager").GetComponent<GameManager>() as GameManager;
+		HumanSpawner spawner = gm.prefabHumanSpawner.GetComponent<HumanSpawner> () as HumanSpawner;
+		PhotonNetwork.InstantiateSceneObject(spawner.objectToSpawn.name, transform.position, Quaternion.identity, 0, null);
+
+		Destroy (gameObject);
 	}
 }
