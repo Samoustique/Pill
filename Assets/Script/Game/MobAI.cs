@@ -9,6 +9,7 @@ public abstract class MobAI : MonoBehaviour {
 	public int damage = 10;
 	public float minWalkingSpeed = 1f;
 	public float maxWalkingSpeed = 2f;
+	public GameObject[] bulletPrefabs;
 
 	protected GameObject target;
 	protected Collider col;
@@ -107,5 +108,30 @@ public abstract class MobAI : MonoBehaviour {
 		//agent.SetDestination (transform.position);
 		agent.enabled = false;
 		col.enabled = false;
+	}
+
+	[PunRPC]
+	public void LaunchBulletOnTarget(string playerName, string injuredPart, int viewId, Vector3 point, Vector3 direction){
+		GameObject player = GameObject.Find (playerName);
+		if (player != null) {
+			Transform[] transforms = player.GetComponentsInChildren<Transform> ();
+			foreach (Transform t in transforms) {
+				Debug.Log (t.name);
+			}
+			/*foreach (Transform child in player.transform) {
+				if (child.name == "FirstPersonCharacter") {
+					foreach (Transform grandChild in child) {
+						if (grandChild.name == "Weapons") {
+							foreach (Transform grandGrandChild in grandChild) {
+								Shoot shootScript = grandGrandChild.gameObject.GetComponent<Shoot>() as Shoot;
+								if (shootScript != null) {
+									shootScript.CreateBulletImpact (injuredPart, viewId, point, direction);
+								}
+							}
+						}
+					}
+				}
+			}*/
+		}
 	}
 }

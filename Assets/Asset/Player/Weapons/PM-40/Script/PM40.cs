@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PM40 : Shoot {
-
 	public Animator animFlame;
-	public GameObject prefabBullet;
+	public GameObject prefabDartIcon;
+	public GameObject prefabDart;
 	public float range;
 
 	private Animator animWeapon;
@@ -46,10 +46,40 @@ public class PM40 : Shoot {
 	}
 
 	protected override GameObject GetPrefabBullet (){
-		return prefabBullet;
+		return prefabDartIcon;
 	}
 
 	protected override float GetRange (){
 		return range;
+	}
+
+	protected override void CreateBulletImpact (string injuredPart, int viewId, Vector3 point, Vector3 direction){
+		GameObject dart = Instantiate (prefabDart, point, Quaternion.FromToRotation (Vector3.forward, direction)) as GameObject;
+		PhotonView view = PhotonView.Find (viewId) as PhotonView;
+
+		GameObject target = FindGameObject (injuredPart, view.gameObject);
+		if (target != null) {
+			dart.transform.parent = target.transform;
+		} else {
+			dart.transform.parent = view.gameObject.transform;
+		}
+	}
+
+	private GameObject FindGameObject(string objectToFind, GameObject source){
+		if (source.transform.name == objectToFind) {
+			return source;
+		}
+		foreach (Transform child in source.transform) {
+			GameObject target = FindGameObject (objectToFind, child.gameObject);
+			if (target != null) {
+				return target;
+			}
+		}
+		return null;
+	}
+
+	protected override void ImpactChild (Vector3 point, Vector3 direction){
+		GameObject dart = Instantiate(prefabDart, point, Quaternion.FromToRotation(Vector3.forward, -direction)) as GameObject;
+		Destroy (dart, 10f);
 	}
 }

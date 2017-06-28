@@ -40,8 +40,10 @@ public abstract class Shoot : MonoBehaviour {
 	protected abstract void FireChild ();
 	protected abstract void FireButEmptyChild ();
 	protected abstract void UpdateChild ();
+	protected abstract void ImpactChild (Vector3 point, Vector3 direction);
 	protected abstract GameObject GetPrefabBullet ();
 	protected abstract float GetRange ();
+	protected abstract void CreateBulletImpact (string injuredPart, int viewId, Vector3 point, Vector3 direction);
 	
 	void OnEnable(){
 		if(uiPlayerManagerScript != null){
@@ -69,17 +71,6 @@ public abstract class Shoot : MonoBehaviour {
 
 			UpdateChild ();
 		}
-	}
-
-	[PunRPC]
-	protected void ShootOnProps(Vector3 point, Vector3 normal){
-		// bullet hole
-		GameObject bulletHole = Instantiate(prefabBulletHole, point, Quaternion.FromToRotation(Vector3.forward, normal)) as GameObject;
-		Destroy(bulletHole, 20f);
-		
-		// sparks
-		GameObject sparks = Instantiate(prefabSparks, point, Quaternion.FromToRotation(Vector3.forward, normal)) as GameObject;
-		Destroy(sparks, 3f);
 	}
 
 	[PunRPC]
@@ -114,8 +105,10 @@ public abstract class Shoot : MonoBehaviour {
 			switch (tag) {
 				case "Zombi":
 				case "Human":
-					MobAI aiScript = hit.transform.gameObject.GetComponent<MobAI>() as MobAI;
+					MobAI aiScript = hit.transform.gameObject.GetComponent<MobAI> () as MobAI;
+					PhotonView targetView = hit.transform.gameObject.GetComponent<PhotonView> () as PhotonView;
 					aiScript.TakeDamage (hit.transform.gameObject, ray.direction, damage);
+					view.RPC ("LaunchBulletOnTarget", PhotonTargets.AllBuffered, PhotonNetwork.player.NickName, hit.transform.name, targetView.viewID, hit.point, hit.normal);
 					break;
 				case "ZombiPart":
 				case "HumanPart":
@@ -124,12 +117,14 @@ public abstract class Shoot : MonoBehaviour {
 						goParent = goParent.transform.parent.gameObject;
 					}
 					aiScript = goParent.GetComponent<MobAI>() as MobAI;
+					targetView = goParent.GetComponent<PhotonView> () as PhotonView;
 					if (aiScript != null) {
 						aiScript.TakeDamage (hit.transform.gameObject, ray.direction, damage);
+						view.RPC ("LaunchBulletOnTarget", PhotonTargets.AllBuffered, PhotonNetwork.player.NickName, hit.transform.name, targetView.viewID, hit.point, hit.normal);
 					}
 					break;
 				case "Props":
-					view.RPC ("ShootOnProps", PhotonTargets.All, hit.point, hit.normal);
+				    view.RPC ("LaunchBullet", PhotonTargets.AllBuffered, hit.point, ray.direction);
 					break;
 			}
 		}
@@ -161,5 +156,22 @@ public abstract class Shoot : MonoBehaviour {
 	public void AddMagazine(){
 		nbTotalBullet += nbMagazineCapacity;
 		uiPlayerManagerScript.UpdateTxtTotalBullet(nbTotalBullet, nbLoadedBullet, GetPrefabBullet());
+	}
+
+	[PunRPC]
+	protected void LaunchBullet(Vector3 point, Vector3 direction){
+		ImpactChild (point, direction);
+	}
+
+	[PunRPC]
+	public void LaunchBulletOnTarget(string playerName, string injuredPart, int viewId, Vector3 point, Vector3 direction){
+		GameObject player = GameObject.Find (playerName);
+
+		if (player != null) {
+			Shoot shootScript = player.GetComponentInChildren<Shoot> () as Shoot;
+			if (shootScript != null) {
+				shootScript.CreateBulletImpact (injuredPart, viewId, point, direction);
+			}
+		}
 	}
 }
