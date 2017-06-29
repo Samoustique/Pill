@@ -7,6 +7,7 @@ public class PM40 : Shoot {
 	public GameObject prefabDartIcon;
 	public GameObject prefabDart;
 	public float range;
+	public float sleepingTime = 10f;
 
 	private Animator animWeapon;
 
@@ -78,8 +79,12 @@ public class PM40 : Shoot {
 		return null;
 	}
 
-	protected override void ImpactChild (Vector3 point, Vector3 direction){
+	protected override void LaunchBulletOnPropsChild (Vector3 point, Vector3 direction){
 		GameObject dart = Instantiate(prefabDart, point, Quaternion.FromToRotation(Vector3.forward, -direction)) as GameObject;
 		Destroy (dart, 10f);
+	}
+
+	protected override void ApplyEffectOnMob (MobAI aiScript, GameObject gameObjectHit, Vector3 direction, int damage){
+		aiScript.GetSleepy (gameObjectHit, direction, sleepingTime);
 	}
 }

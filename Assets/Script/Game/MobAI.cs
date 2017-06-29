@@ -44,7 +44,7 @@ public abstract class MobAI : MonoBehaviour {
 	}
 
 	void Update () {
-		if (!healthManagerScript.isHealing) {
+		if (!healthManagerScript.isHealing && !healthManagerScript.IsSleeping()) {
 			if (healthManagerScript.life > 0) {
 				UpdateChild ();
 			}
@@ -79,9 +79,22 @@ public abstract class MobAI : MonoBehaviour {
 		view.RPC ("DisableMob", PhotonTargets.AllBuffered);
 	}
 
+	public void WakeUp(){
+		view.RPC ("EnableMob", PhotonTargets.AllBuffered);
+	}
+
 	public void TakeDamage (GameObject gameObjectHit, Vector3 direction, int damage){
 		if (healthManagerScript.life > 0) {
 			healthManagerScript.TakeDamage(damage);
+		}
+
+		impactTarget = gameObjectHit.GetComponent<Rigidbody> ();
+		view.RPC ("MoveRigidBody", PhotonTargets.AllBuffered, direction);
+	}
+
+	public void GetSleepy (GameObject gameObjectHit, Vector3 direction, float sleepingTime){
+		if (healthManagerScript.life > 0) {
+			healthManagerScript.GetSleepy(sleepingTime);
 		}
 
 		impactTarget = gameObjectHit.GetComponent<Rigidbody> ();
@@ -107,31 +120,22 @@ public abstract class MobAI : MonoBehaviour {
 		// stay still
 		//agent.SetDestination (transform.position);
 		agent.enabled = false;
-		col.enabled = false;
+		//col.enabled = false;
 	}
 
 	[PunRPC]
-	public void LaunchBulletOnTarget(string playerName, string injuredPart, int viewId, Vector3 point, Vector3 direction){
-		GameObject player = GameObject.Find (playerName);
-		if (player != null) {
-			Transform[] transforms = player.GetComponentsInChildren<Transform> ();
-			foreach (Transform t in transforms) {
-				Debug.Log (t.name);
-			}
-			/*foreach (Transform child in player.transform) {
-				if (child.name == "FirstPersonCharacter") {
-					foreach (Transform grandChild in child) {
-						if (grandChild.name == "Weapons") {
-							foreach (Transform grandGrandChild in grandChild) {
-								Shoot shootScript = grandGrandChild.gameObject.GetComponent<Shoot>() as Shoot;
-								if (shootScript != null) {
-									shootScript.CreateBulletImpact (injuredPart, viewId, point, direction);
-								}
-							}
-						}
-					}
-				}
-			}*/
+	protected void EnableMob(){
+		anim.enabled = true;
+		audioPunctualSource.enabled = true;
+		audioConstantSource.enabled = true;
+
+		foreach(Rigidbody rb in rigidBodies){
+			rb.isKinematic = true;
 		}
+
+		// stay still
+		//agent.SetDestination (transform.position);
+		agent.enabled = true;
+		//col.enabled = true;
 	}
 }
