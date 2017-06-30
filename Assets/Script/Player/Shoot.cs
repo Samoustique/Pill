@@ -8,8 +8,6 @@ public abstract class Shoot : MonoBehaviour {
 	public AudioClip soundShoot;
 	public AudioClip soundReload;
 	public AudioClip soundEmpty;
-	public GameObject prefabBulletHole;
-	public GameObject prefabSparks;
 	public float shootRate = 1f;
 	public int nbMagazineCapacity;
 	public int nbLoadedBullet = -1;

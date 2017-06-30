@@ -20,7 +20,7 @@ public class PM40 : Shoot {
 	}
 
 	protected override void FireChild (){
-		animFlame.SetTrigger("flame");
+		//animFlame.SetTrigger("flame");
 		animWeapon.SetTrigger ("shoot");
 	}
 
