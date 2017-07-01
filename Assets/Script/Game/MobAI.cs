@@ -44,9 +44,11 @@ public abstract class MobAI : MonoBehaviour {
 	}
 
 	void Update () {
-		if (!healthManagerScript.isHealing && !healthManagerScript.IsSleeping()) {
-			if (healthManagerScript.life > 0) {
-				UpdateChild ();
+		if (!healthManagerScript.isHealing) {
+			if (!healthManagerScript.IsSleeping ()) {
+				if (healthManagerScript.life > 0) {
+					UpdateChild ();
+				}
 			}
 
 			if (Time.time < impactEndTime && impactTarget != null) {
@@ -88,8 +90,7 @@ public abstract class MobAI : MonoBehaviour {
 			healthManagerScript.TakeDamage(damage);
 		}
 
-		impactTarget = gameObjectHit.GetComponent<Rigidbody> ();
-		view.RPC ("MoveRigidBody", PhotonTargets.AllBuffered, direction);
+		view.RPC ("MoveRigidBody", PhotonTargets.AllBuffered, direction, gameObjectHit.transform.name);
 	}
 
 	public void GetSleepy (GameObject gameObjectHit, Vector3 direction, float sleepingTime){
@@ -97,14 +98,29 @@ public abstract class MobAI : MonoBehaviour {
 			healthManagerScript.GetSleepy(sleepingTime);
 		}
 
-		impactTarget = gameObjectHit.GetComponent<Rigidbody> ();
-		view.RPC ("MoveRigidBody", PhotonTargets.AllBuffered, direction);
+		view.RPC ("MoveRigidBody", PhotonTargets.AllBuffered, direction, gameObjectHit.transform.name);
 	}
 
 	[PunRPC]
-	protected void MoveRigidBody(Vector3 direction){
+	protected void MoveRigidBody(Vector3 direction, string objectHitName){
 		impact = direction * 2.0f;
 		impactEndTime = Time.time + 0.25f;
+		Debug.Log ("objectHitName " + objectHitName);
+
+		GameObject target = Utilities.FindGameObject (objectHitName, view.gameObject);
+		Debug.Log ("target " + target);
+		Debug.Log ("target name " + target.name);
+		Debug.Log ("impactTarget " + impactTarget);
+
+		if (target != null) {
+			impactTarget = target.GetComponent<Rigidbody> ();
+			Debug.Log ("impactTarget 1" + impactTarget);
+
+		} else {
+			impactTarget = view.gameObject.GetComponent<Rigidbody> ();
+			Debug.Log ("impactTarget 2" + impactTarget);
+
+		}
 	}
 
 	[PunRPC]
@@ -137,5 +153,23 @@ public abstract class MobAI : MonoBehaviour {
 		//agent.SetDestination (transform.position);
 		agent.enabled = true;
 		//col.enabled = true;
+
+		Debug.Log(anim.isActiveAndEnabled);
+		Debug.Log(anim.GetBoneTransform(HumanBodyBones.Hips));
+		Debug.Log(anim.GetBoneTransform(HumanBodyBones.Head));
+		Debug.Log(anim.GetBoneTransform(HumanBodyBones.Spine));
+		Debug.Log(anim.GetBoneTransform(HumanBodyBones.UpperChest));
+		Debug.Log(anim.GetBoneTransform(HumanBodyBones.Neck));
+		Debug.Log(anim.GetBoneTransform(HumanBodyBones.Jaw));
+		Debug.Log(anim.GetBoneTransform(HumanBodyBones.Chest));
+		Debug.Log("----");
+
+		if (anim.GetBoneTransform(HumanBodyBones.Hips).forward.y>0) //hip hips forward vector pointing upwards, initiate the get up from back animation
+		{
+			anim.SetTrigger("getUpBack");
+		}
+		else{
+			anim.SetTrigger("getUpFront");
+		}
 	}
 }

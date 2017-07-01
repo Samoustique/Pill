@@ -58,25 +58,12 @@ public class PM40 : Shoot {
 		GameObject dart = Instantiate (prefabDart, point, Quaternion.FromToRotation (Vector3.forward, direction)) as GameObject;
 		PhotonView view = PhotonView.Find (viewId) as PhotonView;
 
-		GameObject target = FindGameObject (injuredPart, view.gameObject);
+		GameObject target = Utilities.FindGameObject (injuredPart, view.gameObject);
 		if (target != null) {
 			dart.transform.parent = target.transform;
 		} else {
 			dart.transform.parent = view.gameObject.transform;
 		}
-	}
-
-	private GameObject FindGameObject(string objectToFind, GameObject source){
-		if (source.transform.name == objectToFind) {
-			return source;
-		}
-		foreach (Transform child in source.transform) {
-			GameObject target = FindGameObject (objectToFind, child.gameObject);
-			if (target != null) {
-				return target;
-			}
-		}
-		return null;
 	}
 
 	protected override void LaunchBulletOnPropsChild (Vector3 point, Vector3 direction){

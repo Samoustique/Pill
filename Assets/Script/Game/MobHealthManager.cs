@@ -13,7 +13,7 @@ public class MobHealthManager : MonoBehaviour {
 	private bool isSleeping = false;
 
 	void Start () {
-		view = GetComponent<PhotonView> ();
+		view = GetComponent<PhotonView> () as PhotonView;
 		mobAIScript = GetComponent<MobAI> () as MobAI;
 	}
 
