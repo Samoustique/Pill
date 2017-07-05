@@ -19,11 +19,13 @@ public abstract class MobAI : MonoBehaviour {
 	protected AudioSource audioPunctualSource;
 	protected AudioSource audioConstantSource;
 	protected MobHealthManager healthManagerScript;
-	protected List<Rigidbody> rigidBodies;
 
-	protected float impactEndTime = 0;
+	/*protected float impactEndTime = 0;
 	protected Vector3 impact;
-	protected Rigidbody impactTarget = null;
+	protected Rigidbody impactTarget = null;*/
+
+	private bool isWakingUp = false;
+	private MobGetUp getUpScript;
 
 	void Start () {
 		audioPunctualSource = GetComponent<AudioSource> ();
@@ -33,12 +35,7 @@ public abstract class MobAI : MonoBehaviour {
 		anim = GetComponent<Animator> ();
 		agent = GetComponent<NavMeshAgent> ();
 		healthManagerScript = GetComponentInChildren<MobHealthManager> ();
-
-		rigidBodies = new List<Rigidbody>(GetComponentsInChildren<Rigidbody> ());
-		rigidBodies.Remove (GetComponent<Rigidbody> ());
-		foreach(Rigidbody rb in rigidBodies){
-			rb.isKinematic = true;
-		}
+		getUpScript = GetComponent<MobGetUp> () as MobGetUp;
 
 		StartChild ();
 	}
@@ -47,13 +44,15 @@ public abstract class MobAI : MonoBehaviour {
 		if (!healthManagerScript.isHealing) {
 			if (!healthManagerScript.IsSleeping ()) {
 				if (healthManagerScript.life > 0) {
-					UpdateChild ();
+					if (!isWakingUp) {
+						UpdateChild ();
+					}
 				}
 			}
 
-			if (Time.time < impactEndTime && impactTarget != null) {
-				impactTarget.AddForce (impact, ForceMode.VelocityChange);
-			}
+			/*if (Time.time < impactEndTime && impactTarget != null) {
+				view.RPC ("AddForceToRigidBody", PhotonTargets.MasterClient);
+			}*/
 		}
 	}
 
@@ -82,6 +81,7 @@ public abstract class MobAI : MonoBehaviour {
 	}
 
 	public void WakeUp(){
+		isWakingUp = true;
 		view.RPC ("EnableMob", PhotonTargets.AllBuffered);
 	}
 
@@ -103,24 +103,15 @@ public abstract class MobAI : MonoBehaviour {
 
 	[PunRPC]
 	protected void MoveRigidBody(Vector3 direction, string objectHitName){
-		impact = direction * 2.0f;
+		/*impact = direction * 2.0f;
 		impactEndTime = Time.time + 0.25f;
-		Debug.Log ("objectHitName " + objectHitName);
 
 		GameObject target = Utilities.FindGameObject (objectHitName, view.gameObject);
-		Debug.Log ("target " + target);
-		Debug.Log ("target name " + target.name);
-		Debug.Log ("impactTarget " + impactTarget);
-
 		if (target != null) {
 			impactTarget = target.GetComponent<Rigidbody> ();
-			Debug.Log ("impactTarget 1" + impactTarget);
-
 		} else {
 			impactTarget = view.gameObject.GetComponent<Rigidbody> ();
-			Debug.Log ("impactTarget 2" + impactTarget);
-
-		}
+		}*/
 	}
 
 	[PunRPC]
@@ -129,14 +120,13 @@ public abstract class MobAI : MonoBehaviour {
 		audioPunctualSource.enabled = false;
 		audioConstantSource.enabled = false;
 
-		foreach(Rigidbody rb in rigidBodies){
-			rb.isKinematic = false;
-		}
-
-		// stay still
-		//agent.SetDestination (transform.position);
 		agent.enabled = false;
-		//col.enabled = false;
+		getUpScript.ragdolled = true;
+	}
+
+	[PunRPC]
+	protected void AddForceToRigidBody(){
+		//impactTarget.AddForce (impact, ForceMode.VelocityChange);
 	}
 
 	[PunRPC]
@@ -145,31 +135,11 @@ public abstract class MobAI : MonoBehaviour {
 		audioPunctualSource.enabled = true;
 		audioConstantSource.enabled = true;
 
-		foreach(Rigidbody rb in rigidBodies){
-			rb.isKinematic = true;
-		}
+		getUpScript.ragdolled = false;
+	}
 
-		// stay still
-		//agent.SetDestination (transform.position);
+	private void UpReadyToGo(){
 		agent.enabled = true;
-		//col.enabled = true;
-
-		Debug.Log(anim.isActiveAndEnabled);
-		Debug.Log(anim.GetBoneTransform(HumanBodyBones.Hips));
-		Debug.Log(anim.GetBoneTransform(HumanBodyBones.Head));
-		Debug.Log(anim.GetBoneTransform(HumanBodyBones.Spine));
-		Debug.Log(anim.GetBoneTransform(HumanBodyBones.UpperChest));
-		Debug.Log(anim.GetBoneTransform(HumanBodyBones.Neck));
-		Debug.Log(anim.GetBoneTransform(HumanBodyBones.Jaw));
-		Debug.Log(anim.GetBoneTransform(HumanBodyBones.Chest));
-		Debug.Log("----");
-
-		if (anim.GetBoneTransform(HumanBodyBones.Hips).forward.y>0) //hip hips forward vector pointing upwards, initiate the get up from back animation
-		{
-			anim.SetTrigger("getUpBack");
-		}
-		else{
-			anim.SetTrigger("getUpFront");
-		}
+		isWakingUp = false;
 	}
 }

@@ -104,27 +104,27 @@ public abstract class Shoot : MonoBehaviour {
 			switch (tag) {
 			case "Zombi":
 			case "Human":
-					MobAI aiScript = hit.transform.gameObject.GetComponent<MobAI> () as MobAI;
-					PhotonView targetView = hit.transform.gameObject.GetComponent<PhotonView> () as PhotonView;
+				MobAI aiScript = hit.transform.gameObject.GetComponent<MobAI> () as MobAI;
+				PhotonView targetView = hit.transform.gameObject.GetComponent<PhotonView> () as PhotonView;
+				ApplyEffectOnMob (aiScript, hit.transform.gameObject, ray.direction, damage);
+				view.RPC ("MasterLaunchesBulletOnTarget", PhotonTargets.MasterClient, PhotonNetwork.player.NickName, hit.transform.name, targetView.viewID, hit.point, hit.normal);
+				break;
+			case "ZombiPart":
+			case "HumanPart":
+				GameObject goParent = hit.transform.parent.gameObject;
+				while (goParent != null && goParent.tag != "Human" && goParent.tag != "Zombi") {
+					goParent = goParent.transform.parent.gameObject;
+				}
+				aiScript = goParent.GetComponent<MobAI> () as MobAI;
+				targetView = goParent.GetComponent<PhotonView> () as PhotonView;
+				if (aiScript != null) {
 					ApplyEffectOnMob (aiScript, hit.transform.gameObject, ray.direction, damage);
-					view.RPC ("LaunchBulletOnTarget", PhotonTargets.AllBuffered, PhotonNetwork.player.NickName, hit.transform.name, targetView.viewID, hit.point, hit.normal);
-					break;
-				case "ZombiPart":
-				case "HumanPart":
-					GameObject goParent = hit.transform.parent.gameObject;
-					while (goParent != null && goParent.tag != "Human" && goParent.tag != "Zombi") {
-						goParent = goParent.transform.parent.gameObject;
-					}
-					aiScript = goParent.GetComponent<MobAI>() as MobAI;
-					targetView = goParent.GetComponent<PhotonView> () as PhotonView;
-					if (aiScript != null) {
-						ApplyEffectOnMob (aiScript, hit.transform.gameObject, ray.direction, damage);
-						view.RPC ("LaunchBulletOnTarget", PhotonTargets.AllBuffered, PhotonNetwork.player.NickName, hit.transform.name, targetView.viewID, hit.point, hit.normal);
-					}
-					break;
-				case "Props":
-				    view.RPC ("LaunchBulletOnProps", PhotonTargets.AllBuffered, hit.point, ray.direction);
-					break;
+					view.RPC ("MasterLaunchesBulletOnTarget", PhotonTargets.MasterClient, PhotonNetwork.player.NickName, hit.transform.name, targetView.viewID, hit.point, hit.normal);
+				}
+				break;
+			case "Props":
+				view.RPC ("MasterLaunchesBulletOnTarget", PhotonTargets.MasterClient, hit.point, ray.direction);
+				break;
 			}
 		}
 	}
@@ -158,8 +158,18 @@ public abstract class Shoot : MonoBehaviour {
 	}
 
 	[PunRPC]
+	protected void MasterLaunchesBulletOnTarget(Vector3 point, Vector3 direction){
+		view.RPC ("LaunchBulletOnProps", PhotonTargets.AllBuffered, point, direction);
+	}
+
+	[PunRPC]
 	protected void LaunchBulletOnProps(Vector3 point, Vector3 direction){
 		LaunchBulletOnPropsChild (point, direction);
+	}
+
+	[PunRPC]
+	public void MasterLaunchesBulletOnTarget(string playerName, string injuredPart, int viewId, Vector3 point, Vector3 direction){
+		view.RPC ("LaunchBulletOnTarget", PhotonTargets.AllBuffered, playerName, injuredPart, viewId, point, direction);
 	}
 
 	[PunRPC]

@@ -56,6 +56,8 @@ public class PM40 : Shoot {
 
 	protected override void CreateBulletImpact (string injuredPart, int viewId, Vector3 point, Vector3 direction){
 		GameObject dart = Instantiate (prefabDart, point, Quaternion.FromToRotation (Vector3.forward, direction)) as GameObject;
+		Destroy (dart, 10f);
+
 		PhotonView view = PhotonView.Find (viewId) as PhotonView;
 
 		GameObject target = Utilities.FindGameObject (injuredPart, view.gameObject);

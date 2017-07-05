@@ -54,7 +54,7 @@ public class HumanAI : MobAI {
 	}
 
 	private void GoForRandomDestination (){
-		if (nextDestination == null || agent.remainingDistance <= float.Epsilon) {
+		if (nextDestination == null || (anim.isActiveAndEnabled && agent.remainingDistance <= float.Epsilon)) {
 			nextDestination = humanDestinations [Random.Range (0, humanDestinations.Count)];
 		}
 
