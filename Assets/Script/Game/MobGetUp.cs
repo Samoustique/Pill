@@ -9,7 +9,7 @@ public class MobGetUp : MonoBehaviour {
 	private float mecanimToGetUpTransitionTime = 0.05f;
 	//A helper variable to store the time when we transitioned from ragdolled to blendToAnim state
 	private float ragdollingEndTime = -100;
-	private Vector3 ragdolledHipPosition;
+	//private Vector3 ragdolledHipPosition;
 	private Vector3 ragdolledHeadPosition;
 	private Vector3 ragdolledFeetPosition;
 	private List<BodyPart> bodyParts=new List<BodyPart>();
@@ -79,7 +79,7 @@ public class MobGetUp : MonoBehaviour {
 					//Remember some key positions
 					ragdolledFeetPosition = 0.5f * (anim.GetBoneTransform(HumanBodyBones.LeftToes).position + anim.GetBoneTransform(HumanBodyBones.RightToes).position);
 					ragdolledHeadPosition = anim.GetBoneTransform(HumanBodyBones.Head).position;
-					ragdolledHipPosition = anim.GetBoneTransform(HumanBodyBones.Hips).position;
+					//ragdolledHipPosition = anim.GetBoneTransform(HumanBodyBones.Hips).position;
 
 					//Initiate the get up animation
 					if (PhotonNetwork.isMasterClient) {

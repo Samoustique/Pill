@@ -41,12 +41,10 @@ public abstract class MobAI : MonoBehaviour {
 	}
 
 	void Update () {
-		if (!healthManagerScript.isHealing) {
+		if (IsMobFree()) {
 			if (!healthManagerScript.IsSleeping ()) {
-				if (healthManagerScript.life > 0) {
-					if (!isWakingUp) {
-						UpdateChild ();
-					}
+				if (!isWakingUp) {
+					UpdateChild ();
 				}
 			}
 
@@ -54,6 +52,10 @@ public abstract class MobAI : MonoBehaviour {
 				view.RPC ("AddForceToRigidBody", PhotonTargets.MasterClient);
 			}*/
 		}
+	}
+
+	public bool IsMobFree(){
+		return !healthManagerScript.isHealing && healthManagerScript.life > 0;
 	}
 
 	protected abstract void StartChild ();

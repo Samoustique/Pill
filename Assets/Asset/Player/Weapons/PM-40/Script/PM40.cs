@@ -73,7 +73,7 @@ public class PM40 : Shoot {
 		Destroy (dart, 10f);
 	}
 
-	protected override void ApplyEffectOnMob (MobAI aiScript, GameObject gameObjectHit, Vector3 direction, int damage){
+	protected override void ApplyEffectOnMobChild (MobAI aiScript, GameObject gameObjectHit, Vector3 direction, int damage){
 		aiScript.GetSleepy (gameObjectHit, direction, sleepingTime);
 	}
 }

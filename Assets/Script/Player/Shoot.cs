@@ -41,7 +41,7 @@ public abstract class Shoot : MonoBehaviour {
 	protected abstract void LaunchBulletOnPropsChild (Vector3 point, Vector3 direction);
 	protected abstract GameObject GetPrefabBullet ();
 	protected abstract float GetRange ();
-	protected abstract void ApplyEffectOnMob (MobAI aiScript, GameObject gameObjectHit, Vector3 direction, int damage);
+	protected abstract void ApplyEffectOnMobChild (MobAI aiScript, GameObject gameObjectHit, Vector3 direction, int damage);
 	protected abstract void CreateBulletImpact (string injuredPart, int viewId, Vector3 point, Vector3 direction);
 	
 	void OnEnable(){
@@ -126,6 +126,12 @@ public abstract class Shoot : MonoBehaviour {
 				view.RPC ("MasterLaunchesBulletOnTarget", PhotonTargets.MasterClient, hit.point, ray.direction);
 				break;
 			}
+		}
+	}
+
+	private void ApplyEffectOnMob (MobAI aiScript, GameObject gameObjectHit, Vector3 direction, int damage){
+		if(aiScript.IsMobFree()){
+			ApplyEffectOnMobChild (aiScript, gameObjectHit, direction, damage);
 		}
 	}
 	
