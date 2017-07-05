@@ -19,10 +19,19 @@ public class UIPlayerManager : UIManager {
 		}
 		// Rebuild
 		for (int i = 0; i < nbLoadedBullet; ++i) {
-			Vector3 place = goBullets.transform.position;
+			/*Vector3 place = goBullets.transform.position;
 			place.x += 10 * i;
 			GameObject bullet = Instantiate(prefabBullet, place, Quaternion.identity) as GameObject;
-			bullet.transform.SetParent(goBullets.transform);
+			bullet.transform.SetParent(goBullets.transform, false);*/
+
+			GameObject bullet = Instantiate(prefabBullet, Vector3.zero, Quaternion.identity) as GameObject;
+			bullet.transform.SetParent(goBullets.transform, false);
+			Vector3 place = goBullets.transform.position;
+
+			RectTransform rectTransform = bullet.GetComponent<RectTransform> () as RectTransform;
+			Canvas currentCanevas = gameObject.GetComponent<Canvas> () as Canvas;
+			place.x += rectTransform.rect.width * currentCanevas.scaleFactor * i;
+			bullet.transform.position = place;
 		}
 	}
 	
