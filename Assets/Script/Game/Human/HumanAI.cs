@@ -68,10 +68,17 @@ public class HumanAI : MobAI {
 		if (zombi.Value < distanceAttack) {
 			// stay still
 			agent.SetDestination (transform.position);
-			anim.SetTrigger ("attack");
+			MobAI mobAIScript = zombi.Key.GetComponent<MobAI> () as MobAI;
+			if (mobAIScript.IsMobAwakeAndUp ()) {
+				anim.SetTrigger ("attack");
+			} else {
+				anim.SetTrigger ("attackDown");
+			}
 		} else if (!isFighting) {
 			anim.SetBool ("run", true);
 			anim.SetBool ("walk", false);
+			Debug.Log ("target");
+
 			agent.SetDestination (zombi.Key.transform.position);
 			agent.speed = runningSpeed;
 		}
@@ -85,9 +92,13 @@ public class HumanAI : MobAI {
 		isFighting = true;
 		// stay still
 		agent.SetDestination (transform.position);
+		Debug.Log ("StopMoving");
+
 	}
 
 	private void CanMove(){
 		isFighting = false;
+		Debug.Log ("CanMove");
+
 	}
 }

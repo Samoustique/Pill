@@ -42,10 +42,8 @@ public abstract class MobAI : MonoBehaviour {
 
 	void Update () {
 		if (IsMobFree()) {
-			if (!healthManagerScript.IsSleeping ()) {
-				if (!isWakingUp) {
-					UpdateChild ();
-				}
+			if (IsMobAwakeAndUp()) {
+				UpdateChild ();
 			}
 
 			/*if (Time.time < impactEndTime && impactTarget != null) {
@@ -56,6 +54,14 @@ public abstract class MobAI : MonoBehaviour {
 
 	public bool IsMobFree(){
 		return !healthManagerScript.isHealing && healthManagerScript.life > 0;
+	}
+
+	public bool IsMobSleeping(){
+		return healthManagerScript.IsSleeping ();
+	}
+
+	public bool IsMobAwakeAndUp(){
+		return !healthManagerScript.IsSleeping () && !isWakingUp;
 	}
 
 	protected abstract void StartChild ();

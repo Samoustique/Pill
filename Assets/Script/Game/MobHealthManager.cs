@@ -6,21 +6,29 @@ public class MobHealthManager : MonoBehaviour {
 	public int life = 100;
 	public bool isHealing = false;
 	public float maxSleepingTime = 10f;
+	public GameObject timerCirclePrefab;
 
 	private PhotonView view;
 	private MobAI mobAIScript;
 	private float sleepingTimer = 0f;
 	private bool isSleeping = false;
+	private GameObject canvas;
+	private GameObject timerCircle;
 
 	void Start () {
 		view = GetComponent<PhotonView> () as PhotonView;
 		mobAIScript = GetComponent<MobAI> () as MobAI;
+		canvas = GameObject.Find ("CanvasPlayer");
 	}
 
 	void Update () {
-		if (isSleeping && sleepingTimer > 0) {
-			sleepingTimer -= Time.deltaTime;
-		} else if (isSleeping && sleepingTimer <= 0) {
+		if (timerCircle != null) {
+			Vector3 heading = transform.position - Camera.main.transform.position;
+			if (Vector3.Dot (Camera.main.transform.forward, heading) > 0) {
+				timerCircle.transform.position = Camera.main.WorldToScreenPoint (transform.position);
+			}
+		} else if (isSleeping) {
+			// the mob has just woken up
 			mobAIScript.WakeUp ();
 			isSleeping = false;
 		}
@@ -35,6 +43,19 @@ public class MobHealthManager : MonoBehaviour {
 	}
 
 	public void GetSleepy (float sleepingTime){
+		if (timerCircle == null) {
+			timerCircle = Instantiate (timerCirclePrefab, Vector3.zero, Quaternion.identity) as GameObject;
+			timerCircle.transform.SetParent (canvas.transform, false);
+
+			Vector3 heading = transform.position - Camera.main.transform.position;
+			if (Vector3.Dot (Camera.main.transform.forward, heading) > 0) {
+				timerCircle.transform.position = Camera.main.WorldToScreenPoint (transform.position);
+			}
+
+			SleepingTimer sleepingTimerScript = timerCircle.GetComponent<SleepingTimer> () as SleepingTimer;
+			sleepingTimerScript.SetMaxTimer (maxSleepingTime);
+			sleepingTimerScript.SetMobPosition (transform.position);
+		}
 		view.RPC ("UpdateSleepingTimer", PhotonTargets.AllBuffered, sleepingTime);
 	}
 
@@ -58,11 +79,7 @@ public class MobHealthManager : MonoBehaviour {
 
 		isSleeping = true;
 
-		float timer = sleepingTimer + sleepingTime;
-		if (timer > maxSleepingTime) {
-			sleepingTimer = maxSleepingTime;
-		} else {
-			sleepingTimer = timer;
-		}
+		SleepingTimer sleepingTimerScript = timerCircle.GetComponent<SleepingTimer> () as SleepingTimer;
+		sleepingTimerScript.UpdateTimer (sleepingTime);
 	}
 }
