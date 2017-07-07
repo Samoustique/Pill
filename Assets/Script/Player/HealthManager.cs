@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HealthManager : MonoBehaviour {
 	public int life = 100;
-	
+
 	private UIPlayerManager uiPlayerManagerScript;
 	private UIRoomManager uiRoomManagerScript;
 	private bool isDead = false;
@@ -12,6 +12,7 @@ public class HealthManager : MonoBehaviour {
 
 	void Start () {
 		view = GetComponent<PhotonView> ();
+		GetComponent<Camera>().depthTextureMode = DepthTextureMode.Depth;
 
 		uiRoomManagerScript = GameObject.Find ("CanvasRoom").GetComponentInChildren<UIRoomManager> ();
 
@@ -31,8 +32,7 @@ public class HealthManager : MonoBehaviour {
 
 			if (life <= 0 && !isDead) {
 				isDead = true;
-				//GetComponent<AudioSource> ().PlayOneShot (soundPlayerDead);
-				//GetComponent<PlayerDead> ().Die ();
+				view.RPC ("DisablePlayer", PhotonTargets.AllBuffered, PhotonNetwork.player.NickName);
 			}
 		}
 	}
@@ -42,4 +42,10 @@ public class HealthManager : MonoBehaviour {
 		uiRoomManagerScript = GameObject.Find ("CanvasRoom").GetComponentInChildren<UIRoomManager> ();
 		uiRoomManagerScript.UpdatePlayerLife (player, life);
 	}
+
+	[PunRPC]
+	protected void DisablePlayer(string player){
+		GameObject.Find (player).tag = "Dead";
+	}
+
 }
