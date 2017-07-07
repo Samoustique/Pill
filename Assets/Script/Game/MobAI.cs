@@ -67,6 +67,7 @@ public abstract class MobAI : MonoBehaviour {
 	protected abstract void StartChild ();
 	protected abstract void UpdateChild ();
 	protected abstract void MakeDamage ();
+	protected abstract void DisableBoolAnimChild ();
 
 	protected KeyValuePair<GameObject, float> GetClosest(GameObject[] objects){
 		float min = float.MaxValue;
@@ -124,11 +125,12 @@ public abstract class MobAI : MonoBehaviour {
 
 	[PunRPC]
 	protected void DisableMob(){
+		DisableBoolAnimChild ();
 		anim.enabled = false;
 		audioPunctualSource.enabled = false;
 		audioConstantSource.enabled = false;
-
 		agent.enabled = false;
+
 		getUpScript.ragdolled = true;
 	}
 

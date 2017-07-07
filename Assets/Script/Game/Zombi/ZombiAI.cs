@@ -66,6 +66,11 @@ public class ZombiAI : MobAI {
 		zombiHurtsScript.NotifyIsHitting(damage);
 	}
 
+	protected override void DisableBoolAnimChild (){
+		anim.SetBool ("walk", false);
+		anim.SetBool ("attack", false);
+	}
+
 	public void Healed(){
 		FallDown ();
 		view.RPC ("ZombiIntoHuman", PhotonTargets.AllBuffered);

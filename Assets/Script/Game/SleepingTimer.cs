@@ -7,13 +7,11 @@ public class SleepingTimer : MonoBehaviour {
 	private float sleepingTimer = 0f;
 	private float maxSleepingTime = -1f;
 	private Image image;
-	private float startingDistance;
 	private Vector3 startingScale;
 	private Vector3 mobPosition;
 
 	void Start () {
 		image = GetComponent<Image> () as Image;
-		startingDistance = Vector3.Distance (Camera.main.transform.position, transform.position);
 		startingScale = transform.localScale;
 	}
 

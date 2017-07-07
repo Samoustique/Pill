@@ -10,7 +10,6 @@ public class MobHealthManager : MonoBehaviour {
 
 	private PhotonView view;
 	private MobAI mobAIScript;
-	private float sleepingTimer = 0f;
 	private bool isSleeping = false;
 	private GameObject canvas;
 	private GameObject timerCircle;
@@ -25,7 +24,8 @@ public class MobHealthManager : MonoBehaviour {
 		if (timerCircle != null) {
 			Vector3 heading = transform.position - Camera.main.transform.position;
 			if (Vector3.Dot (Camera.main.transform.forward, heading) > 0) {
-				timerCircle.transform.position = Camera.main.WorldToScreenPoint (transform.position);
+				Camera cam = GameObject.Find (PhotonNetwork.player.NickName).GetComponentInChildren<Camera> () as Camera;
+				timerCircle.transform.position = cam.WorldToScreenPoint (transform.position);
 			}
 		} else if (isSleeping) {
 			// the mob has just woken up
@@ -43,19 +43,6 @@ public class MobHealthManager : MonoBehaviour {
 	}
 
 	public void GetSleepy (float sleepingTime){
-		if (timerCircle == null) {
-			timerCircle = Instantiate (timerCirclePrefab, Vector3.zero, Quaternion.identity) as GameObject;
-			timerCircle.transform.SetParent (canvas.transform, false);
-
-			Vector3 heading = transform.position - Camera.main.transform.position;
-			if (Vector3.Dot (Camera.main.transform.forward, heading) > 0) {
-				timerCircle.transform.position = Camera.main.WorldToScreenPoint (transform.position);
-			}
-
-			SleepingTimer sleepingTimerScript = timerCircle.GetComponent<SleepingTimer> () as SleepingTimer;
-			sleepingTimerScript.SetMaxTimer (maxSleepingTime);
-			sleepingTimerScript.SetMobPosition (transform.position);
-		}
 		view.RPC ("UpdateSleepingTimer", PhotonTargets.AllBuffered, sleepingTime);
 	}
 
@@ -75,11 +62,27 @@ public class MobHealthManager : MonoBehaviour {
 
 	[PunRPC]
 	protected void UpdateSleepingTimer(float sleepingTime){
+		SleepingTimer sleepingTimerScript;
+		if (timerCircle == null) {
+			timerCircle = Instantiate (timerCirclePrefab, Vector3.zero, Quaternion.identity) as GameObject;
+			timerCircle.transform.SetParent (canvas.transform, false);
+
+			Vector3 heading = transform.position - Camera.main.transform.position;
+			if (Vector3.Dot (Camera.main.transform.forward, heading) > 0) {
+				Camera cam = GameObject.Find (PhotonNetwork.player.NickName).GetComponentInChildren<Camera> () as Camera;
+				timerCircle.transform.position = cam.WorldToScreenPoint (transform.position);
+			}
+
+			sleepingTimerScript = timerCircle.GetComponent<SleepingTimer> () as SleepingTimer;
+			sleepingTimerScript.SetMaxTimer (maxSleepingTime);
+			sleepingTimerScript.SetMobPosition (transform.position);
+		}
+
 		mobAIScript.FallDown ();
 
 		isSleeping = true;
 
-		SleepingTimer sleepingTimerScript = timerCircle.GetComponent<SleepingTimer> () as SleepingTimer;
+		sleepingTimerScript = timerCircle.GetComponent<SleepingTimer> () as SleepingTimer;
 		sleepingTimerScript.UpdateTimer (sleepingTime);
 	}
 }

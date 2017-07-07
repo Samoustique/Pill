@@ -39,6 +39,7 @@ public class HealthManager : MonoBehaviour {
 
 	[PunRPC]
 	protected void UpdateRoomLife(string player, int life){
+		uiRoomManagerScript = GameObject.Find ("CanvasRoom").GetComponentInChildren<UIRoomManager> ();
 		uiRoomManagerScript.UpdatePlayerLife (player, life);
 	}
 }

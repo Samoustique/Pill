@@ -77,8 +77,6 @@ public class HumanAI : MobAI {
 		} else if (!isFighting) {
 			anim.SetBool ("run", true);
 			anim.SetBool ("walk", false);
-			Debug.Log ("target");
-
 			agent.SetDestination (zombi.Key.transform.position);
 			agent.speed = runningSpeed;
 		}
@@ -88,17 +86,18 @@ public class HumanAI : MobAI {
 		humanHurtsScript.NotifyIsHitting(damage);
 	}
 
+	protected override void DisableBoolAnimChild (){
+		anim.SetBool ("walk", false);
+		anim.SetBool ("run", false);
+	}
+
 	private void StopMoving(){
 		isFighting = true;
 		// stay still
 		agent.SetDestination (transform.position);
-		Debug.Log ("StopMoving");
-
 	}
 
 	private void CanMove(){
 		isFighting = false;
-		Debug.Log ("CanMove");
-
 	}
 }
