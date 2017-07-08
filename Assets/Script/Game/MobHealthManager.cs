@@ -22,9 +22,9 @@ public class MobHealthManager : MonoBehaviour {
 
 	void Update () {
 		if (timerCircle != null) {
-			Vector3 heading = transform.position - Camera.main.transform.position;
+			Camera cam = GameObject.Find (PhotonNetwork.player.NickName).GetComponentInChildren<Camera> () as Camera;
+			Vector3 heading = transform.position - cam.transform.position;
 			if (Vector3.Dot (Camera.main.transform.forward, heading) > 0) {
-				Camera cam = GameObject.Find (PhotonNetwork.player.NickName).GetComponentInChildren<Camera> () as Camera;
 				timerCircle.transform.position = cam.WorldToScreenPoint (transform.position);
 			}
 		} else if (isSleeping) {
@@ -67,9 +67,9 @@ public class MobHealthManager : MonoBehaviour {
 			timerCircle = Instantiate (timerCirclePrefab, Vector3.zero, Quaternion.identity) as GameObject;
 			timerCircle.transform.SetParent (canvas.transform, false);
 
-			Vector3 heading = transform.position - Camera.main.transform.position;
+			Camera cam = GameObject.Find (PhotonNetwork.player.NickName).GetComponentInChildren<Camera> () as Camera;
+			Vector3 heading = transform.position - cam.transform.position;
 			if (Vector3.Dot (Camera.main.transform.forward, heading) > 0) {
-				Camera cam = GameObject.Find (PhotonNetwork.player.NickName).GetComponentInChildren<Camera> () as Camera;
 				timerCircle.transform.position = cam.WorldToScreenPoint (transform.position);
 			}
 

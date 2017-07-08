@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HealthManager : MonoBehaviour {
 	public int life = 100;
@@ -45,7 +46,32 @@ public class HealthManager : MonoBehaviour {
 
 	[PunRPC]
 	protected void DisablePlayer(string player){
-		GameObject.Find (player).tag = "Dead";
+		GameObject goPlayer = GameObject.Find (player);
+		goPlayer.tag = "Dead";
+
+		GameObject weapons = Utilities.FindGameObject("Weapons", goPlayer);
+		if (weapons != null) {
+			weapons.SetActive (false);
+		}
+
+		GameObject body = Utilities.FindGameObject("Body", goPlayer);
+		if (body != null) {
+			body.SetActive (false);
+		}
+
+		if (view.isMine) {
+			GameObject.Find("CrossHair").SetActive(false);
+			GameObject.Find("pnlAmmoLife").SetActive(false);
+			GameObject.Find("BloodScreen").SetActive(false);
+			Color newColor;
+			ColorUtility.TryParseHtmlString ("#ACAAB2FF", out newColor);
+			GameObject.Find("pnlRoom").GetComponent<Image>().color = newColor;
+
+			goPlayer.GetComponentInChildren<UnityStandardAssets.ImageEffects.Bloom> ().enabled = true;
+			goPlayer.GetComponentInChildren<UnityStandardAssets.ImageEffects.Fisheye> ().enabled = true;
+			goPlayer.GetComponentInChildren<UnityStandardAssets.ImageEffects.GlobalFog> ().enabled = true;
+			goPlayer.GetComponentInChildren<UnityStandardAssets.ImageEffects.Grayscale> ().enabled = true;
+		}
 	}
 
 }

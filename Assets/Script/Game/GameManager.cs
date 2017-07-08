@@ -90,6 +90,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void OnLeftRoom(){
+		Debug.Log ("OnLeftRoom");
 		PhotonNetwork.LoadLevel ("login");
 	}
 
@@ -99,6 +100,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void OnPhotonPlayerDisconnected(){
+		Debug.Log("OnPhotonPlayerDisconnected"); 
 		UpdateListOfPlayers ();
 	}
 
