@@ -81,17 +81,13 @@ public class GameManager : MonoBehaviour {
 		uiRoomManagerScript.UpdateListOfPlayers (players, PhotonNetwork.player.NickName);
 	}
 
-	public void BackToLogin(){
-		PhotonNetwork.LeaveRoom ();
-	}
-
 	void OnJoinedRoom(){
 		Debug.Log ("OnJoinedRoom");
 	}
 
 	void OnLeftRoom(){
 		Debug.Log ("OnLeftRoom");
-		PhotonNetwork.LoadLevel ("login");
+		PhotonNetwork.LoadLevel ("Menu");
 	}
 
 	void OnPhotonPlayerConnected(){ // a player has just joined the room

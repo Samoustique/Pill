@@ -2,18 +2,54 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityStandardAssets.Characters.FirstPerson;
 
 public class UIRoomManager : UIManager {
-	
 	public Text txtRoom;
 	public GameObject playerUIPrefab;
 	public GameObject playersUISpawn;
 	public GameObject playerPseudoPrefab;
+	public GameObject pnlMenuPrefab;
 
 	private GameObject otherPlayerPseudo;
+	private bool displayMenu = false;
+	private GameObject menu;
 
 	void Update(){
 		DisplayOtherPlayerPseudo ();
+
+		if (Input.GetKeyDown (KeyCode.Escape)) {
+			displayMenu = !displayMenu;
+		}
+
+		if (displayMenu && menu == null) {
+			int x = Screen.width / 2;
+			int y = Screen.height / 2;
+			Vector3 middleScreen = new Vector3 (x, y);
+			menu = Instantiate (pnlMenuPrefab, middleScreen, Quaternion.identity, transform) as GameObject;
+			Button btnLeave = Utilities.FindGameObject ("btnLeave", menu).GetComponent<Button>() as Button;
+			btnLeave.onClick.AddListener (OnLeavRoomPressed);
+			Button btnResume = Utilities.FindGameObject ("btnResume", menu).GetComponent<Button>() as Button;
+			btnResume.onClick.AddListener (OnResumePressed);
+
+			DisplayHideMenu (displayMenu);
+		} else if (!displayMenu && menu != null) {
+			Destroy (menu);
+			DisplayHideMenu (displayMenu);
+		}
+	}
+
+	private void DisplayHideMenu(bool isMenu){
+		Cursor.visible = isMenu;
+		GameObject canvasPlayer = GameObject.Find ("CanvasPlayer");
+		foreach (Transform child in canvasPlayer.transform) {
+			child.gameObject.SetActive (!isMenu);
+		}
+		GameObject player = GameObject.Find (PhotonNetwork.player.NickName);
+		FirstPersonController fpc = player.GetComponentInChildren<FirstPersonController> () as FirstPersonController;
+		fpc.enabled = !isMenu;
+		Shoot shoot = player.GetComponentInChildren<Shoot> () as Shoot;
+		shoot.enabled = !isMenu;
 	}
 
 	public void UpdateRoom(string roomName){
@@ -95,5 +131,13 @@ public class UIRoomManager : UIManager {
 				}
 			}
 		}
+	}
+
+	private void OnResumePressed(){
+		displayMenu = false;
+	}
+
+	private void OnLeavRoomPressed(){
+		PhotonNetwork.LeaveRoom ();
 	}
 }

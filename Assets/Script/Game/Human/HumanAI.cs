@@ -94,6 +94,7 @@ public class HumanAI : MobAI {
 	private void StopMoving(){
 		isFighting = true;
 		// stay still
+		agent.enabled = true;
 		agent.SetDestination (transform.position);
 	}
 
