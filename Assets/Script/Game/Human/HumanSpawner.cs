@@ -46,39 +46,7 @@ public class HumanSpawner : MonoBehaviour {
 		Vector3 pos = new Vector3 (circlePos.x, 0, circlePos.y);
 		pos *= radius;
 		pos += transform.position;
+		pos.y = 0;
 		PhotonNetwork.InstantiateSceneObject(objectToSpawn.name, pos, Quaternion.identity, 0, null);
 	}
-
-	/*public float spawnRate = 2f;
-	public float radius = 10f;
-	public GameObject objectToSpawn;
-	public int nbMaxHuman = 30;
-
-	private float nextSpawn;
-	private bool isContinue = true;
-	private PhotonView view;
-
-	void Start(){
-		view = GetComponent<PhotonView> () as PhotonView;
-	}
-
-	void Update () {
-		if (isContinue && Time.time > nextSpawn) {
-			if (PhotonNetwork.isMasterClient) {
-				nextSpawn = Time.time + spawnRate;
-				view.RPC("Spawn", PhotonTargets.AllBuffered);
-			}
-			//isContinue = false;
-		}
-	}
-
-	[PunRPC]
-	protected void Spawn(){
-		Vector3 circlePos = Random.insideUnitCircle * radius;
-		Vector3 pos = new Vector3 (circlePos.x, 0, circlePos.y);
-		pos *= radius;
-		Debug.Log (pos);
-		pos += transform.position;
-		Instantiate(objectToSpawn, pos, Quaternion.identity);
-	}*/
 }
