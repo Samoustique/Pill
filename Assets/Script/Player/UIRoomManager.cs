@@ -47,9 +47,13 @@ public class UIRoomManager : UIManager {
 		}
 		GameObject player = GameObject.Find (PhotonNetwork.player.NickName);
 		FirstPersonController fpc = player.GetComponentInChildren<FirstPersonController> () as FirstPersonController;
-		fpc.enabled = !isMenu;
+		if (fpc != null) {
+			fpc.enabled = !isMenu;
+		}
 		Shoot shoot = player.GetComponentInChildren<Shoot> () as Shoot;
-		shoot.enabled = !isMenu;
+		if (shoot != null) {
+			shoot.enabled = !isMenu;
+		}
 	}
 
 	public void UpdateRoom(string roomName){

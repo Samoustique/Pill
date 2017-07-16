@@ -4,7 +4,8 @@ using UnityEngine;
 using UnityEngine.AI;
 
 public class HumanAI : MobAI {
-	public float distanceChase = 20f;
+	public float minDistanceChase = 30f;
+	public float maxDistanceChase = 50f;
 	public float minRunningSpeed = 3f;
 	public float maxRunningSpeed = 5f;
 
@@ -15,6 +16,7 @@ public class HumanAI : MobAI {
 	private Transform nextDestination;
 	private float runningSpeed;
 	private float walkingSpeed;
+	private float distanceChase;
 
 	protected override void StartChild (){
 		humanHurtsScript = GetComponentInChildren<HumanHurts> ();
@@ -27,6 +29,7 @@ public class HumanAI : MobAI {
 
 		runningSpeed = Random.Range (minRunningSpeed, maxRunningSpeed);
 		walkingSpeed = Random.Range (minWalkingSpeed, maxWalkingSpeed);
+		distanceChase = Random.Range (minDistanceChase, maxDistanceChase);
 	}
 
 	protected override void UpdateChild (){
